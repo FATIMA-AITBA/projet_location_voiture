@@ -77,7 +77,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ agency }) => {
           contact: updatedData.contact,
           adresse: updatedData.adresse,
           description: updatedData.description,
-          type: "agency",
+          type: "agence",
         })
       );
 

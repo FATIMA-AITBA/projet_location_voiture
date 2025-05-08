@@ -75,26 +75,29 @@ exports.login = async (req, res) => {
 
 
 exports.updateProfile = async (req, res) => {
-  // ID client récupéré via le middleware d'authentification
-  const agenceId = req.agence.id; 
-  // Données du profil récupérées via le corps de la requête
+  const agenceId = req.client.id; 
   const { nom, adresse, contact, email, description } = req.body;
 
   try {
-    // Simuler un délai (1s) pour l'effet de loading
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     const updatedData = { nom, adresse, contact, email, description };
 
-    // appeler la fonction de mise à jour du modèle
+    // Optionnel : retirer les champs non définis
+    Object.keys(updatedData).forEach(key => {
+      if (updatedData[key] === undefined) {
+        delete updatedData[key];
+      }
+    });
+
     const updatedAgence = await updateAgence(agenceId, updatedData);
 
-    // Répondre avec le message + données mises à jour
     res.status(200).json({
       message: 'Profil mis à jour avec succès',
       updatedData: updatedAgence,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur serveur', error });
+    console.error('Erreur lors de la mise à jour du profil:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };

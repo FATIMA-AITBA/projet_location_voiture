@@ -44,7 +44,7 @@ const updateAgence = (id, updatedData) => {
       }
 
       // Sélectionner les données mises à jour depuis la base 
-      const selectQuery = 'SELECT id, nom, email,contact, adresse, description, contact FROM client WHERE id = ?';
+      const selectQuery = 'SELECT id, nom, email,contact, adresse, description, contact FROM agence WHERE id = ?';
       db.query(selectQuery, [id], (err, rows) => {
         if (err) {
           return reject(err);
