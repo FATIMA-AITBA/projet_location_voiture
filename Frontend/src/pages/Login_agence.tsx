@@ -33,13 +33,17 @@ export default function AgenceAuthPage() {
 
     
         localStorage.setItem('token', data.token);
-        localStorage.setItem('agence', JSON.stringify(data.agence));
-        localStorage.setItem('user', JSON.stringify({ 
-          nom: data.agence.nom, 
-          type: 'agence',
-          id: data.agence.id
+        //localStorage.setItem('agence', JSON.stringify(data.agence));
+        localStorage.setItem('user', JSON.stringify({
+          id: data.agence.id,
+          nom: data.agence.nom,
+          email: data.agence.email,
+          description: data.agence.description,
+          contact: data.agence.contact,
+          adresse: data.agence.adresse,
+          type: 'agence'
         }));
-
+        
 
         window.location.href = '/';
       } else {

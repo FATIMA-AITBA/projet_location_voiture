@@ -6,7 +6,7 @@ const createAgence = (agence, callback) => {
     INSERT INTO agence (nom, adresse, contact, email, password)
     VALUES (?, ?, ?, ?, ?)
   `;
-  const values = [agence.nom, agence.adresse, agence.conatact, agence.email, agence.password];
+  const values = [agence.nom, agence.adresse, agence.contact, agence.email, agence.password];
 
   db.query(sql, values, (err, result) => {
     if (err) {

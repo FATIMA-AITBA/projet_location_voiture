@@ -9,9 +9,9 @@ const SECRET_KEY = process.env.JWT_SECRET;
 // 🔐 Enregistrement d'une agence
 exports.register = async (req, res) => {
   try {
-    const { nom, adresse, telephone, email, password, description } = req.body;
+    const { nom, adresse, contact, email, password, description } = req.body;
 
-    if (!nom || !adresse || !telephone || !email || !password) {
+    if (!nom || !adresse || !contact || !email || !password) {
       return res.status(400).json({ message: 'Tous les champs obligatoires sont requis' });
     }
 
@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newAgence = { nom, adresse, telephone, email, password: hashedPassword, description };
+    const newAgence = { nom, adresse, contact, email, password: hashedPassword, description };
 
     createAgence(newAgence, (err, result) => {
       if (err) {

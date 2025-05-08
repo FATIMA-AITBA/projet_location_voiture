@@ -82,4 +82,25 @@ Content-Type: application/json
   "password": "monmotdepasse"
 }
 
+######
+POST http://localhost:5000/api/agences/login
+Content-Type: application/json
 
+{
+  "email": "rahal@gmail.com",
+  "password": "aa"
+}
+
+
+
+#######
+POST http://localhost:5000/api/agences/register
+Content-Type: application/json
+
+{
+    "nom": "Agence Beta",
+    "adresse": "ras el ma",
+    "contact": "098343489",
+    "email": "agenceali@gmail.com",
+    "password": "123"
+}

@@ -21,7 +21,7 @@ export default function AgenceProfile() {
           name: parsed.nom, // Nom de l'agence
           email: parsed.email || 'contact@xyz.com', // Email de l'agence
           contact: parsed.contact || '+33 123 456 789', // Contact (anciennement téléphone)
-          address: parsed.adresse || '123 Rue de Paris, Paris, France', // Adresse
+          adresse: parsed.adresse || '123 Rue de Paris, Paris, France', // Adresse
           description: parsed.description || 'Location de voitures premium avec service personnalisé.' // Description par défaut
         });
       }
