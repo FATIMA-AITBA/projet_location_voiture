@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../../public/images/logo.png";
 import { IoMdMenu } from "react-icons/io";
 import { TbWorld } from "react-icons/tb";
-import { FaCarAlt } from "react-icons/fa";
+import { FaCarAlt, FaCalendarAlt, FaAddressCard, FaUser, FaInfoCircle, FaSignOutAlt } from "react-icons/fa";
 
 interface MenuItem {
   name: string;
@@ -17,7 +17,9 @@ const menu: MenuItem[] = [
 
 export default function Nav() {
   const [showLoginOptions, setShowLoginOptions] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [user, setUser] = useState<{ nom: string; type: string } | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -31,12 +33,17 @@ export default function Nav() {
     }
   }, []);
 
-  const handleProfileClick = () => {
-    if (user?.type === "client") {
-      window.location.href = "/client_profile";
-    } else if (user?.type === "agence") {
-      window.location.href = "/agence_profile";
-    }
+  const handleToggleMenu = () => setShowMenu((prev) => !prev);
+
+  const handleNavigate = (path: string) => {
+    setShowMenu(false);
+    navigate(path);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/");
   };
 
   return (
@@ -63,13 +70,49 @@ export default function Nav() {
         ))}
 
         {user ? (
-          <li>
-            <button
-              onClick={handleProfileClick}
-              className="text-white font-bold hover:underline"
+          <li className="relative">
+            <span
+              onClick={handleToggleMenu}
+              className="text-white font-bold cursor-pointer"
             >
               Bonjour, {user.nom}
-            </button>
+            </span>
+            {showMenu && (
+              <div className="absolute right-0 top-10 bg-white shadow-lg rounded-md py-2 z-50 w-48">
+                <button
+                  onClick={() => handleNavigate("/reservations")}
+                  className="w-full flex items-center px-4 py-2 text-sm hover:bg-gray-100"
+                >
+                  <FaCalendarAlt className="mr-2" /> Réservation
+                </button>
+                <button
+                  onClick={() => handleNavigate("/donnees-personnelles")}
+                  className="w-full flex items-center px-4 py-2 text-sm hover:bg-gray-100"
+                >
+                  <FaAddressCard className="mr-2" /> Données personnelles
+                </button>
+                <button
+                  onClick={() =>
+                    handleNavigate(user.type === "client" ? "/client_profile" : "/agence_profile")
+                  }
+                  className="w-full flex items-center px-4 py-2 text-sm hover:bg-gray-100"
+                >
+                  <FaUser className="mr-2" /> Profil
+                </button>
+                <button
+                  onClick={() => handleNavigate("/aide")}
+                  className="w-full flex items-center px-4 py-2 text-sm hover:bg-gray-100"
+                >
+                  <FaInfoCircle className="mr-2" /> Aide
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                >
+                  <FaSignOutAlt className="mr-2" /> Se déconnecter
+                </button>
+              </div>
+            )}
           </li>
         ) : (
           <li className="relative">

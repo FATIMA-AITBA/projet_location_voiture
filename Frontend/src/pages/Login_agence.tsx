@@ -34,10 +34,14 @@ export default function AgenceAuthPage() {
     
         localStorage.setItem('token', data.token);
         localStorage.setItem('agence', JSON.stringify(data.agence));
-        localStorage.setItem('user', JSON.stringify({ nom: data.agence.nom, type: 'agence' }));
+        localStorage.setItem('user', JSON.stringify({ 
+          nom: data.agence.nom, 
+          type: 'agence',
+          id: data.agence.id
+        }));
 
 
-        window.location.href = '/agence_profile';
+        window.location.href = '/';
       } else {
         setMessage(data.message || 'Email ou mot de passe incorrect');
       }
@@ -131,7 +135,7 @@ export default function AgenceAuthPage() {
               />
             </div>
             <div className="mb-4">
-              <label className="block mb-1 text-sm text-gray-700">Contact</label>
+              <label className="block mb-1 text-sm text-gray-700">Telephone</label>
               <input
                 type="text"
                 value={registerData.contact}

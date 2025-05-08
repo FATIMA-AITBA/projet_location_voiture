@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import Notification from "./Notification";
+import ActionButton from "./ActionButton";
 
 interface Agency {
   name: string;
   email: string;
-  contact: string; // Changement de "phone" à "contact"
-  address: string;
+  contact: string;
+  adresse: string;
   description: string;
 }
 
@@ -15,25 +17,89 @@ interface ProfileSectionProps {
 const ProfileSection: React.FC<ProfileSectionProps> = ({ agency }) => {
   const [agencyName, setAgencyName] = useState<string>(agency.name);
   const [email, setEmail] = useState<string>(agency.email);
-  const [contact, setContact] = useState<string>(agency.contact); // Utilisation de "contact" au lieu de "phone"
-  const [address, setAddress] = useState<string>(agency.address);
+  const [contact, setContact] = useState<string>(agency.contact);
+  const [adresse, setAdresse] = useState<string>(agency.adresse);
   const [description, setDescription] = useState<string>(agency.description);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [saving, setSaving] = useState<boolean>(false);
 
-  const handleSave = (): void => {
-    console.log("Sauvegarde des infos :", { agencyName, email, contact, address, description });
+  const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  const showNotification = (message: string, type: "success" | "error") => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 18000);
+  };
+
+  const handleSave = async (): Promise<void> => {
+    const updatedAgency = {
+      nom: agencyName,
+      email,
+      contact,
+      adresse,
+      description,
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("http://localhost:5000/api/agences/update-profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedAgency),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.message === "Token invalide" || data.message === "Token expiré") {
+          showNotification(data.message, "error");
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/login_agency";
+        } else {
+          showNotification(data.message || "Erreur serveur", "error");
+        }
+        return;
+      }
+
+      const updatedData = data.updatedData;
+      showNotification(data.message, "success");
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          id: updatedData.id,
+          nom: updatedData.nom,
+          email: updatedData.email,
+          contact: updatedData.contact,
+          adresse: updatedData.adresse,
+          description: updatedData.description,
+          type: "agency",
+        })
+      );
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      console.error("Erreur de mise à jour :", error);
+      showNotification("Erreur serveur", "error");
+    }
   };
 
   return (
     <section className="my-6 p-4 bg-white shadow-lg rounded-lg">
-      <h3 className="text-xl font-medium mb-4">Informations Générales</h3>
+      <h3 className="text-xl font-medium mb-4">Profil de l'Agence</h3>
 
       <div className="mb-4">
         <label className="block font-medium mb-1">Nom de l'agence :</label>
         <input
           type="text"
           value={agencyName}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAgencyName(e.target.value)}
+          onChange={(e) => setAgencyName(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded"
           disabled={!isEditing}
         />
@@ -44,7 +110,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ agency }) => {
         <input
           type="email"
           value={email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded"
           disabled={!isEditing}
         />
@@ -55,7 +121,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ agency }) => {
         <input
           type="text"
           value={contact}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setContact(e.target.value)} // Utilisation de "contact"
+          onChange={(e) => setContact(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded"
           disabled={!isEditing}
         />
@@ -65,8 +131,8 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ agency }) => {
         <label className="block font-medium mb-1">Adresse :</label>
         <input
           type="text"
-          value={address}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
+          value={adresse}
+          onChange={(e) => setAdresse(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded"
           disabled={!isEditing}
         />
@@ -76,7 +142,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ agency }) => {
         <label className="block font-medium mb-1">Description :</label>
         <textarea
           value={description}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
+          onChange={(e) => setDescription(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded"
           disabled={!isEditing}
         />
@@ -91,15 +157,18 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ agency }) => {
         </button>
       ) : (
         <div className="flex gap-4">
-          <button
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            onClick={() => {
-              handleSave();
+          <ActionButton
+            loading={saving}
+            onClick={async () => {
+              setSaving(true);
+              await handleSave();
               setIsEditing(false);
+              setSaving(false);
             }}
-          >
-            Enregistrer
-          </button>
+            text="Enregistrer"
+            loadingText="Enregistrement..."
+            color="blue"
+          />
           <button
             className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
             onClick={() => setIsEditing(false)}
@@ -108,8 +177,16 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ agency }) => {
           </button>
         </div>
       )}
+
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
     </section>
   );
 };
 
-export default ProfileSection; // Assure-toi d'utiliser l'exportation par défaut
+export default ProfileSection;
