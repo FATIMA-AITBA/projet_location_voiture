@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-const BookingFooter: React.FC = () => {
+const BookingFooter: React.FC = ({ total }: { total: number }) => {
   return (
     <div className="w-full bg-gray-100 p-6 space-y-6">
       {/* Total avec prix aligné à droite */}
@@ -11,7 +11,7 @@ const BookingFooter: React.FC = () => {
         <input
             id="total-price-footer"
             type="text"
-            value="1000 MAD"
+            value={`${total.toFixed(2)} MAD`}
             readOnly
             className="text-lg font-bold text-right bg-transparent border-none focus:ring-0"
         />

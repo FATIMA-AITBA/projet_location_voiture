@@ -58,7 +58,7 @@ export default function Card({ car: propCar, onSelect }: CardProps) {
             <GrCheckmark className="text-[12px] text-green-500" /> Kilométrage inclus {car.kilometrageInclus} km
           </p>
 
-          <p><span className="font-bold text-[26px]">{car.prixParJour} €</span>
+          <p><span className="font-bold text-[26px]">{car.prixParJour} MAD</span>
             <span className="text-[12px]">/ par jour</span>
           </p>
         </div>

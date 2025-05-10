@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import InfoPopup from "./infoPopup";
-import DetailPrixPopup from "./DetailPrixPopup"; // importe ton nouveau composant
+import DetailPrixPopup from "./DetailPrixPopup";
 import { useNavigate } from "react-router-dom";
 
-// Définition du type pour les props
+// Types des props
 interface Car {
   prixParJour: string | number;
   tarifKmSupp: number;
@@ -15,19 +15,22 @@ interface Car {
 interface CarOptionsProps {
   car: Car;
   differenceEnJours: number;
+  dateDepart: string;
+  dateRetour: string;
 }
 
-const CarOptions = ({ car, differenceEnJours }: CarOptionsProps) => {
-  const [showPopup, setShowPopup] = useState<boolean>(false); // pour InfoPopup
-  const [showDetailPrix, setShowDetailPrix] = useState<boolean>(false); // pour DetailPrixPopup
-  const [selectedValue, setSelectedValue] = useState<string | number>(car?.prixParJour || "");
+const CarOptions: React.FC<CarOptionsProps> = ({ car, differenceEnJours,dateDepart,dateRetour }) => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [showDetailPrix, setShowDetailPrix] = useState(false);
+  const [selectedValue, setSelectedValue] = useState<string | number>(car.prixParJour || "");
+  const [kilometrageType, setKilometrageType] = useState<"limité" | "illimité">("limité");
 
-  const supplementLocal = 5; // supplément local fixe
 
   const navigate = useNavigate();
+  const supplementLocal = 5;
 
   useEffect(() => {
-    setSelectedValue(car?.prixParJour || "");
+    setSelectedValue(car.prixParJour || "");
   }, [car]);
 
   const togglePopup = () => setShowPopup((prev) => !prev);
@@ -36,9 +39,18 @@ const CarOptions = ({ car, differenceEnJours }: CarOptionsProps) => {
   const toggleDetailPrix = () => setShowDetailPrix((prev) => !prev);
   const closeDetailPrix = () => setShowDetailPrix(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedValue(event.target.value);
-  };
+ const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const value = event.target.value;
+  setSelectedValue(value);
+
+  // Vérifie si la valeur correspond à l’option illimitée
+  const prixIllimite = parseFloat((+car.prixParJour + car.tarifKmIlimitesParJour).toFixed(2));
+  if (parseFloat(value) === prixIllimite) {
+    setKilometrageType("illimité");
+  } else {
+    setKilometrageType("limité");
+  }
+};
 
   const calculateMontantHT = (): number => {
     return parseFloat((parseFloat(selectedValue as string) * differenceEnJours).toFixed(2));
@@ -47,7 +59,7 @@ const CarOptions = ({ car, differenceEnJours }: CarOptionsProps) => {
   const calculateTVA = (): number => {
     const tauxTVA = 20;
     const montantHT = calculateMontantHT();
-    return parseFloat((montantHT * tauxTVA / 100).toFixed(2));
+    return parseFloat(((montantHT * tauxTVA) / 100).toFixed(2));
   };
 
   const totalFrais = (): number => {
@@ -62,8 +74,14 @@ const CarOptions = ({ car, differenceEnJours }: CarOptionsProps) => {
   };
 
   const handleNavigation = () => {
-    navigate('/booking_page', {
-      state: {},
+    navigate("/booking_page", {
+      state: { total: calculateTotal() ,
+        car: car ,
+        differenceEnJours: differenceEnJours,
+        dateDepart: dateDepart,
+        dateRetour: dateRetour,
+        kilometrageType: kilometrageType,
+      },
     });
   };
 
@@ -89,38 +107,39 @@ const CarOptions = ({ car, differenceEnJours }: CarOptionsProps) => {
 
       <h2 className="text-lg font-semibold mb-4">Kilométrage</h2>
       <div className="space-y-3">
-        <label
-          className="flex items-start border rounded-xl p-4 cursor-pointer hover:border-blue-500 transition-all"
-        >
+        {/* Option avec kilométrage limité */}
+        <label className="flex items-start border rounded-xl p-4 cursor-pointer hover:border-blue-500 transition-all">
           <input
             type="radio"
             name="kilometrage"
-            value={car?.prixParJour}
+            value={car.prixParJour}
             className="mt-1 mr-3 accent-blue-600"
             onChange={handleChange}
-            checked={selectedValue == car?.prixParJour}
+            checked={selectedValue == car.prixParJour}
           />
           <div className="flex justify-between w-full">
             <div>
-              <p className="font-medium">{car?.kilometrageInclus} km</p>
+              <p className="font-medium">{car.kilometrageInclus} km</p>
               <p className="text-sm text-gray-500">
-                +{car?.tarifKmSupp} € / pour chaque kilomètre supplémentaire
+                +{car.tarifKmSupp} MAD / pour chaque kilomètre supplémentaire
               </p>
             </div>
             <span className="text-sm font-semibold self-start">Inclus</span>
           </div>
         </label>
 
-        <label
-          className="flex items-start border rounded-xl p-4 cursor-pointer hover:border-blue-500 transition-all"
-        >
+        {/* Option avec kilomètres illimités */}
+        <label className="flex items-start border rounded-xl p-4 cursor-pointer hover:border-blue-500 transition-all">
           <input
             type="radio"
             name="kilometrage"
-            value={parseFloat((car?.prixParJour + car?.tarifKmIlimitesParJour).toFixed(2))}
+            value={parseFloat((+car.prixParJour + car.tarifKmIlimitesParJour).toFixed(2))}
             className="mt-1 mr-3 accent-blue-600"
             onChange={handleChange}
-            checked={selectedValue == parseFloat((car?.prixParJour + car?.tarifKmIlimitesParJour).toFixed(2))}
+            checked={
+              selectedValue ==
+              parseFloat((+car.prixParJour + car.tarifKmIlimitesParJour).toFixed(2))
+            }
           />
           <div className="flex justify-between w-full">
             <div>
@@ -130,7 +149,7 @@ const CarOptions = ({ car, differenceEnJours }: CarOptionsProps) => {
               </p>
             </div>
             <span className="text-sm font-semibold self-start">
-              + {car?.tarifKmIlimitesParJour} € par jour
+              + {car.tarifKmIlimitesParJour} MAD par jour
             </span>
           </div>
         </label>
@@ -138,13 +157,13 @@ const CarOptions = ({ car, differenceEnJours }: CarOptionsProps) => {
 
       <div className="mt-8 flex justify-between items-center">
         <div className="text-lg font-semibold">
-          <span>{selectedValue} €</span>
+          <span>{selectedValue} MAD</span>
           <span className="text-sm text-gray-500"> / jour</span>
-          <div className="text-sm text-gray-600">{calculateTotal()} € total</div>
+          <div className="text-sm text-gray-600">{calculateTotal()} MAD total</div>
         </div>
         <button
           onClick={handleNavigation}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-xl transition-all"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 py-3 rounded-xl transition-all"
         >
           Réserver
         </button>

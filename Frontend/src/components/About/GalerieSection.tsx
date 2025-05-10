@@ -9,9 +9,11 @@ interface Car {
 interface GalerieSectionProps {
   carList: Car[];
   differenceEnJours: number;
+  dateDepart: string;
+  dateRetour: string;
 }
 
-export default function GalerieSection({ carList, differenceEnJours }: GalerieSectionProps) {
+export default function GalerieSection({ carList, differenceEnJours,dateDepart,dateRetour }: GalerieSectionProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [windowWidth, setWindowWidth] = useState<number>(
     typeof window !== 'undefined' ? window.innerWidth : 1200
@@ -70,6 +72,8 @@ export default function GalerieSection({ carList, differenceEnJours }: GalerieSe
                     car={carList[selectedIndex]}
                     onBack={() => setSelectedIndex(null)}
                     differenceEnJours={differenceEnJours}
+                    dateDepart={dateDepart}
+                    dateRetour={dateRetour}
                   />
                 </div>
               )}

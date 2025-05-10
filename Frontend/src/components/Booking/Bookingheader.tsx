@@ -1,7 +1,9 @@
 import React from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 
-const BookingHeader = () => {
+
+
+const BookingHeader = ({ total }: { total: number }) => {
   return (
     <div className="w-full bg-gray-100 p-6 flex items-center shadow-md font-poppins">
       {/* Bouton retour */}
@@ -20,7 +22,7 @@ const BookingHeader = () => {
         <input
           id="total-price"
           type="text"
-          value={`1000 MAD`} // Exemple
+          value={`${total.toFixed(2)} MAD`}
           readOnly
           className="text-lg font-bold text-right bg-transparent border-none focus:ring-0 text-gray-900"
         />

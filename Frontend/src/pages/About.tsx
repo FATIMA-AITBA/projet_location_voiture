@@ -116,7 +116,8 @@ export default function About() {
             <ErrorSecondFilter />
           )
         ) : (
-          <GalerieSection carList={carList} differenceEnJours={differenceEnJours} />
+          <GalerieSection carList={carList} differenceEnJours={differenceEnJours} dateDepart={dateDepart}
+          dateRetour={dateRetour} />
         )}
       </main>
       <Footer />

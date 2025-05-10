@@ -35,9 +35,9 @@ const DetailPrixPopup: React.FC<DetailPrixPopupProps> = ({
         <div className="mb-4">
           <p className="font-semibold">Frais de location (Montant hors taxes) : </p>
           <p className="text-sm text-gray-600">
-            {differenceEnJours} Jour de location x {selectedValue} €
+            {differenceEnJours} Jour de location x {selectedValue} MAD
           </p>
-          <p className="text-right font-medium">{montantHT} €</p>
+          <p className="text-right font-medium">{montantHT} MAD</p>
         </div>
 
         <div className="mb-4 border-t pt-4">
@@ -45,22 +45,22 @@ const DetailPrixPopup: React.FC<DetailPrixPopupProps> = ({
 
           <div className="flex justify-between text-sm text-gray-600 mb-1 ml-5">
             <span>TVA :</span>
-            <span>{tva} €</span>
+            <span>{tva} MAD</span>
           </div>
 
           <div className="flex justify-between text-sm text-gray-600 mb-1 ml-5">
             <span>Supplément local :</span>
-            <span>{supp} €</span>
+            <span>{supp} MAD</span>
           </div>
 
           <div className="flex justify-end text-base font-medium text-gray-800 mt-2">
-            <span>{frais} €</span>
+            <span>{frais} MAD</span>
           </div>
         </div>
 
         <div className="border-t pt-2 flex justify-between font-semibold text-lg">
           <span>Total (TTC) :</span>
-          <span>{total}</span>
+          <span>{total} MAD</span>
         </div>
       </div>
     </div>

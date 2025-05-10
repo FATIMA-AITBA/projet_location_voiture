@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  FaGasPump, FaCarSide, FaChevronDown, FaCarAlt, FaCar, FaShuttleVan
+  FaGasPump, FaCarSide, FaChevronDown, FaCarAlt, FaCar, FaTruck ,FaShuttleVan
 } from "react-icons/fa";
 import { MdElectricCar } from "react-icons/md";
 import { BsFillFuelPumpDieselFill } from "react-icons/bs";
@@ -13,8 +13,9 @@ import {
 } from "react-icons/tb";
 import {
   SiAudi, SiMercedes, SiPeugeot, SiRenault, SiToyota,
-  SiVolkswagen, SiBmw, SiFiat, SiFord, SiJeep
+  SiVolkswagen, SiBmw, SiFiat, SiFord, SiJeep, SiHonda,SiNissan, SiMazda, SiHyundai, SiKia,SiVolvo,SiCadillac,SiMitsubishi,SiJaguar
 } from "react-icons/si";
+import { IoDiamondOutline } from "react-icons/io5";
 import cn from "classnames";
 
 type Car = {
@@ -60,30 +61,36 @@ export default function FilterSection({
   const [priceOrder, setPriceOrder] = useState<number | null>(null);
   const [brandList, setBrandList] = useState<string[]>([]);
   const [selectedFuel, setSelectedFuel] = useState<string[]>([]);
-  const [fuelList, setFuelList] = useState<string[]>([]);
+  /*const [fuelList, setFuelList] = useState<string[]>([]);*/
+ const fuelList: string[] = ['essence', 'diesel', 'electrique', 'hybride'];
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenFuel, setIsOpenFuel] = useState(false);
   const [isOpenCar, setIsOpenCar] = useState(false);
   const [selectedTypeBoite, setSelectedTypeBoite] = useState<string[]>([]);
-  const [typeBoiteList, setTypeBoiteList] = useState<string[]>([]);
+  /*const [typeBoiteList, setTypeBoiteList] = useState<string[]>([]);*/
+  const typeBoiteList: string[] = ['automatique', 'manuel'];
   const [selectedTypeCar, setSelectedTypeCar] = useState<string[]>([]);
-  const [typeCarList, setTypeCarList] = useState<string[]>([]);
+  /*const [typeCarList, setTypeCarList] = useState<string[]>([]);*/
+  const typeCarList: string[] = ["berline", "suv", "coupe", "cabriolet", "minivan", "break", "Véhicule de luxe","Véhicule utilitaire","voiture familiale"];
   const [selectedPlaces, setSelectedPlaces] = useState<number | null>(null);
 
   const BrandSet = new Set<string>();
-  const FuelSet = new Set<string>();
-  const TypeBoiteSet = new Set<string>();
-  const TypeCarSet = new Set<string>();
+  /*const FuelSet = new Set<string>();*/
+  /*const TypeBoiteSet = new Set<string>();*/
+  /*const TypeCarSet = new Set<string>();*/
 
   
 
   const iconMap: Record<string, JSX.Element> = {
+    //tpye de carburant
     essence: <FaGasPump size={24} />,
-    diesiel: <BsFillFuelPumpDieselFill size={24} />,
+    diesel: <BsFillFuelPumpDieselFill size={24} />,
     electrique: <MdElectricCar size={24} />,
     hybride: <FaCarSide size={24} />,
+    //type de boite
     automatique: <TbSquareLetterAFilled size={24} />,
     manuel: <TbManualGearboxFilled size={24} />,
+    // marque(brand) de voiture
     audi: <SiAudi size={58} />,
     mercedes: <SiMercedes size={58} />,
     peugeot: <SiPeugeot size={58} />,
@@ -94,12 +101,26 @@ export default function FilterSection({
     fiat: <SiFiat size={58} />,
     ford: <SiFord size={58} />,
     jeep: <SiJeep size={58} />,
+    honda: <SiHonda size={58} />,
+    nissan: <SiNissan size={58} />,
+    mazda: <SiMazda size={58} />,
+    hyundai: <SiHyundai size={58} />,
+    kia: <SiKia size={58} />,
+    volvo: <SiVolvo size={58} />,
+    cadillac: <SiCadillac size={58} />,
+    mitsubishi: <SiMitsubishi size={58} />,
+    jaguar: <SiJaguar size={58} />,
+    
+    //type de voiture
     berline: <FaCarSide size={24} />,
     suv: <TbCarSuvFilled size={24} />,
     coupe: <FaCarAlt size={24} />,
     cabriolet: <FaCar size={24} />,
     minivan: <FaShuttleVan size={24} />,
     break: <FaShuttleVan size={24} />,
+    "Véhicule utilitaire": <FaTruck size={24} />,
+    "Véhicule de luxe": <IoDiamondOutline size={24} />,
+    
   };
 
   
@@ -123,15 +144,15 @@ export default function FilterSection({
   const handlerFilter = () => {
     carFilter.forEach((element: any) => {
       BrandSet.add(element.marque);
-      FuelSet.add(element.fuelType);
-      TypeBoiteSet.add(element.typeBoite);
-      TypeCarSet.add(element.carType);
+      /*FuelSet.add(element.fuelType);*/
+      /*TypeBoiteSet.add(element.typeBoite);*/
+      /*TypeCarSet.add(element.carType);*/
     });
   
     setBrandList(Array.from(BrandSet));
-    setFuelList(Array.from(FuelSet));
-    setTypeBoiteList(Array.from(TypeBoiteSet));
-    setTypeCarList(Array.from(TypeCarSet));
+    /*setFuelList(Array.from(FuelSet));*/
+    /*setTypeBoiteList(Array.from(TypeBoiteSet));*/
+    /*setTypeCarList(Array.from(TypeCarSet));*/
   };
   
 

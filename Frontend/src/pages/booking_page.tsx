@@ -7,7 +7,48 @@ import BillingAddress from '../components/Booking/BillingAdress';
 import BookingFooter from '../components/Booking/BookingFooter';
 import BookingCar from '../components/Booking/BookingCar';
 import car1 from "../../public/images/bmwserie1.png"
+
+ // ajouter par abdelilah
+import { useLocation} from "react-router-dom";
+type LocationState = {
+  total: number;
+  differenceEnJours: number;
+  dateDepart: string;
+  dateRetour: string;
+  kilometrageType: string;
+  car: {
+    name: string;
+    marque: string;
+    places: number;
+    typeBoite: string;
+    fuelType: string;
+    carType: string;
+    prixParJour: number;
+    kilometrageInclus: number;
+    tarifKmSupp: number;
+    tarifKmIlimitesParJour: number;
+    lieuDeRetrait: string;
+    lieuDeRetour: string;
+    image: {
+      url: string;
+    };
+  };
+}
+
 const BookingForm = () => {
+  
+  // ajouter par abdelilah
+  const location = useLocation();
+  const state = location.state as LocationState | null;
+  const total = state?.total;
+   const car = state?.car;
+  const differenceEnJours = state?.differenceEnJours;
+  const dateDepart = state?.dateDepart;
+  const dateRetour = state?.dateRetour;
+  const kilometrageType = state?.kilometrageType;
+
+  
+
   const [formData, setFormData] = useState({
     company: '',
     firstName: '',
@@ -31,7 +72,7 @@ const BookingForm = () => {
   return (
     <div className="min-h-screen bg-white p-4">
       {/* Première section */}
-      <BookingHeader />
+      <BookingHeader total={total} />
 
       {/* ********************************************************* */}
       
@@ -49,20 +90,20 @@ const BookingForm = () => {
 <div className="lg:w-1/3 w-full px-6">
   <div className="sticky top-6">
   <BookingCar
-  image={car1}
-  name="Citroën C4"
-  subtitle="ou similaire | CDMR"
-  days={4}
-  pickupLocation="Marrakech Gueliz"
-  pickupDate="jeu., 17 avr. 2025"
+  image={car?.image?.url}
+  name={car?.name}
+  subtitle={`${car.marque} | ${car.carType}`}
+  days={differenceEnJours}
+  pickupLocation={car?.lieuDeRetrait}
+  pickupDate={dateDepart}
   pickupTime="13:00"
-  returnLocation="Marrakech M'hamid"
-  returnDate="lun., 21 avr. 2025"
+  returnLocation={car?.lieuDeRetour}
+  returnDate={dateRetour}
   returnTime="08:30"
   features={[
     "Assurance au tiers",
     "Assistance dépannage 24/7",
-    "Kilométrage illimité",
+    `Kilométrage: ${kilometrageType}`,
     "Option de paiement: Restez flexible - Payez à la prise en charge, annulez et modifiez gratuitement avant l'heure de la prise en charge"
   ]}
 />
@@ -77,7 +118,7 @@ const BookingForm = () => {
 {/* ********************************************************* */}
 
       {/* Section footer */}
-      <BookingFooter />
+      <BookingFooter total={total} />
     </div>
   );
 };

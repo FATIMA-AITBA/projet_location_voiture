@@ -53,8 +53,34 @@ const updateAnnulation = (reservationId, newStatus) => {
   });
 };
 
+
+const getAllReservationsWithVoiture = () => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT 
+        r.id_reservation,
+        DATE_FORMAT(r.date_depart, '%Y-%m-%d') AS date_depart,
+        DATE_FORMAT(r.date_retour, '%Y-%m-%d') AS date_retour,
+        v.id AS id_voiture,
+        v.name AS nom_voiture,
+        v.marque AS marque_voiture
+      FROM reservation r
+      JOIN voiture v ON r.id_voiture = v.id
+    `;
+
+    db.query(sql, (err, results) => {
+      if (err) return reject(err);
+      resolve(results);
+    });
+  });
+};
+
+
+
 module.exports = {
   getReservationsByClient,
   updateAnnulation,
-
+  getAllReservationsWithVoiture
 };
+
+

@@ -104,3 +104,8 @@ Content-Type: application/json
     "email": "agenceali@gmail.com",
     "password": "123"
 }
+
+
+#########
+GET  http://localhost:5000/api/voitures/AllVoituresEtReservations
+Content-Type: application/json

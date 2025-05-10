@@ -1,4 +1,4 @@
-import request, {gql} from 'graphql-request';
+/*import request, {gql} from 'graphql-request';
 
 export const getCarList = async () => {
     const query = gql`
@@ -42,3 +42,28 @@ export const getCarList = async () => {
     return result;
 
 }
+*/
+
+
+
+export const getCarList = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/api/voitures/AllVoituresEtReservations', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération des données');
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Erreur dans getCarList:', error);
+    return null;
+  }
+};
+

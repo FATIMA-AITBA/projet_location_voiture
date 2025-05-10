@@ -21,9 +21,11 @@ interface CarDetailsProps {
   car: Car;
   onBack: () => void;
   differenceEnJours: number;
+  dateDepart: string;
+  dateRetour: string;
 }
 
-export default function CarDetails({ car, onBack, differenceEnJours }: CarDetailsProps) {
+export default function CarDetails({ car, onBack, differenceEnJours,dateDepart,dateRetour }: CarDetailsProps) {
   return (
     <div className="bg-[#e1e3e4] p-2 rounded-xl ">
       <div className=" text-black rounded-xl shadow-2xl w-full ">
@@ -82,7 +84,8 @@ export default function CarDetails({ car, onBack, differenceEnJours }: CarDetail
               <AiOutlineClose />
             </button>
 
-            <CarOptions car={car} differenceEnJours={differenceEnJours} />
+            <CarOptions car={car} differenceEnJours={differenceEnJours}    dateDepart={dateDepart}
+                    dateRetour={dateRetour} />
           </div>
         </div>
       </div>
