@@ -3,9 +3,11 @@ import { AiOutlineInfoCircle } from "react-icons/ai";
 import InfoPopup from "./infoPopup";
 import DetailPrixPopup from "./DetailPrixPopup";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // Types des props
 interface Car {
+  id: number;
   prixParJour: string | number;
   tarifKmSupp: number;
   kilometrageInclus: number;
@@ -19,12 +21,20 @@ interface CarOptionsProps {
   dateRetour: string;
 }
 
-const CarOptions: React.FC<CarOptionsProps> = ({ car, differenceEnJours,dateDepart,dateRetour }) => {
+const CarOptions: React.FC<CarOptionsProps> = ({
+  car,
+  differenceEnJours,
+  dateDepart,
+  dateRetour,
+}) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showDetailPrix, setShowDetailPrix] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<string | number>(car.prixParJour || "");
-  const [kilometrageType, setKilometrageType] = useState<"limité" | "illimité">("limité");
-
+  const [selectedValue, setSelectedValue] = useState<string | number>(
+    car.prixParJour || ""
+  );
+  const [kilometrageType, setKilometrageType] = useState<
+    "limité" | "illimité"
+  >("limité");
 
   const navigate = useNavigate();
   const supplementLocal = 5;
@@ -39,21 +49,25 @@ const CarOptions: React.FC<CarOptionsProps> = ({ car, differenceEnJours,dateDepa
   const toggleDetailPrix = () => setShowDetailPrix((prev) => !prev);
   const closeDetailPrix = () => setShowDetailPrix(false);
 
- const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const value = event.target.value;
-  setSelectedValue(value);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSelectedValue(value);
 
-  // Vérifie si la valeur correspond à l’option illimitée
-  const prixIllimite = parseFloat((+car.prixParJour + car.tarifKmIlimitesParJour).toFixed(2));
-  if (parseFloat(value) === prixIllimite) {
-    setKilometrageType("illimité");
-  } else {
-    setKilometrageType("limité");
-  }
-};
+    const prixIllimite = parseFloat(
+      (
+        parseFloat(car.prixParJour.toString()) + car.tarifKmIlimitesParJour
+      ).toFixed(2)
+    );
+    if (parseFloat(value) === prixIllimite) {
+      setKilometrageType("illimité");
+    } else {
+      setKilometrageType("limité");
+    }
+  };
 
   const calculateMontantHT = (): number => {
-    return parseFloat((parseFloat(selectedValue as string) * differenceEnJours).toFixed(2));
+    const prix = parseFloat(selectedValue.toString());
+    return parseFloat((prix * differenceEnJours).toFixed(2));
   };
 
   const calculateTVA = (): number => {
@@ -73,16 +87,47 @@ const CarOptions: React.FC<CarOptionsProps> = ({ car, differenceEnJours,dateDepa
     return parseFloat((montantHT + fraisPlusTVA).toFixed(2));
   };
 
-  const handleNavigation = () => {
-    navigate("/booking_page", {
-      state: { total: calculateTotal() ,
-        car: car ,
-        differenceEnJours: differenceEnJours,
-        dateDepart: dateDepart,
-        dateRetour: dateRetour,
-        kilometrageType: kilometrageType,
-      },
-    });
+  const handleNavigation = async () => {
+    const token = localStorage.getItem("token");
+    const userString = localStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : null;
+
+    if (token && user && user.type === "client") {
+      try {
+        await axios.post(
+          "http://localhost:5000/api/reservations",
+          {
+            date_depart: dateDepart,
+            date_retour: dateRetour,
+            id_voiture: car.id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        alert("Votre demande de réservation est enregistrée");
+
+        navigate("/booking_page", {
+          state: {
+            total: calculateTotal(),
+            car,
+            differenceEnJours,
+            dateDepart,
+            dateRetour,
+            kilometrageType,
+          },
+        });
+      } catch (error) {
+        console.error("Erreur lors de la réservation :", error);
+        alert("Erreur lors de la création de la réservation");
+      }
+    } else {
+      alert("Connectez-vous d'abord");
+      // navigate("/login");
+    }
   };
 
   return (
@@ -93,7 +138,8 @@ const CarOptions: React.FC<CarOptionsProps> = ({ car, differenceEnJours,dateDepa
         <div>
           <p className="font-medium">Restez flexible</p>
           <p className="text-sm text-gray-500">
-            Payez à la prise en charge, annulez et modifiez gratuitement avant l'heure de la prise en charge
+            Payez à la prise en charge, annulez et modifiez gratuitement avant
+            l'heure de la prise en charge
           </p>
         </div>
 
@@ -107,7 +153,7 @@ const CarOptions: React.FC<CarOptionsProps> = ({ car, differenceEnJours,dateDepa
 
       <h2 className="text-lg font-semibold mb-4">Kilométrage</h2>
       <div className="space-y-3">
-        {/* Option avec kilométrage limité */}
+        {/* Option limité */}
         <label className="flex items-start border rounded-xl p-4 cursor-pointer hover:border-blue-500 transition-all">
           <input
             type="radio"
@@ -121,35 +167,45 @@ const CarOptions: React.FC<CarOptionsProps> = ({ car, differenceEnJours,dateDepa
             <div>
               <p className="font-medium">{car.kilometrageInclus} km</p>
               <p className="text-sm text-gray-500">
-                +{car.tarifKmSupp} MAD / pour chaque kilomètre supplémentaire
+                +{car.tarifKmSupp} MAD / km supplémentaire
               </p>
             </div>
             <span className="text-sm font-semibold self-start">Inclus</span>
           </div>
         </label>
 
-        {/* Option avec kilomètres illimités */}
+        {/* Option illimité */}
         <label className="flex items-start border rounded-xl p-4 cursor-pointer hover:border-blue-500 transition-all">
           <input
             type="radio"
             name="kilometrage"
-            value={parseFloat((+car.prixParJour + car.tarifKmIlimitesParJour).toFixed(2))}
+            value={parseFloat(
+              (
+                parseFloat(car.prixParJour.toString()) +
+                car.tarifKmIlimitesParJour
+              ).toFixed(2)
+            )}
             className="mt-1 mr-3 accent-blue-600"
             onChange={handleChange}
             checked={
-              selectedValue ==
-              parseFloat((+car.prixParJour + car.tarifKmIlimitesParJour).toFixed(2))
+              parseFloat(selectedValue.toString()) ===
+              parseFloat(
+                (
+                  parseFloat(car.prixParJour.toString()) +
+                  car.tarifKmIlimitesParJour
+                ).toFixed(2)
+              )
             }
           />
           <div className="flex justify-between w-full">
             <div>
               <p className="font-medium">Kilomètres illimités</p>
               <p className="text-sm text-gray-500">
-                Tous les kilomètres sont inclus dans le prix
+                Tous les kilomètres sont inclus
               </p>
             </div>
             <span className="text-sm font-semibold self-start">
-              + {car.tarifKmIlimitesParJour} MAD par jour
+              + {car.tarifKmIlimitesParJour} MAD / jour
             </span>
           </div>
         </label>
@@ -159,13 +215,15 @@ const CarOptions: React.FC<CarOptionsProps> = ({ car, differenceEnJours,dateDepa
         <div className="text-lg font-semibold">
           <span>{selectedValue} MAD</span>
           <span className="text-sm text-gray-500"> / jour</span>
-          <div className="text-sm text-gray-600">{calculateTotal()} MAD total</div>
+          <div className="text-sm text-gray-600">
+            {calculateTotal()} MAD total
+          </div>
         </div>
         <button
           onClick={handleNavigation}
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 py-3 rounded-xl transition-all"
         >
-          Réserver
+          Demander Reservation
         </button>
       </div>
 
@@ -176,7 +234,7 @@ const CarOptions: React.FC<CarOptionsProps> = ({ car, differenceEnJours,dateDepa
         Détails du prix
       </div>
 
-      {/* POPUPS */}
+      {/* Popups */}
       {showPopup && <InfoPopup onClose={closePopup} />}
       {showDetailPrix && (
         <DetailPrixPopup

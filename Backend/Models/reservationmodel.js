@@ -75,12 +75,62 @@ const getAllReservationsWithVoiture = () => {
   });
 };
 
+const addReservation = ({ date_depart, date_retour, id_voiture, id_client }) => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      INSERT INTO reservation 
+        (date_depart, date_retour, date_reservation, id_voiture, id_client, confirmee, annulee)
+      VALUES (?, ?, NOW(), ?, ?, 0, 0)
+    `;              
+
+    const params = [date_depart, date_retour, id_voiture, id_client];
+    console.log("📤 SQL addReservation:", sql.trim(), params);
+
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        console.error("❌ MySQL addReservation ERROR:", err.sqlMessage);
+        return reject(err);
+      }
+      console.log("✅ MySQL addReservation RESULT:", result);
+      resolve(result);
+    });
+  });
+};
+
+
+
+
+
+
+const getReservationsEnAttenteByAgence = (id_agence, callback) => {
+  const query = `
+    SELECT 
+      r.id_reservation,
+      DATE_FORMAT(r.date_depart, '%Y-%m-%d') AS date_depart,
+      DATE_FORMAT(r.date_retour, '%Y-%m-%d') AS date_retour,
+      DATE_FORMAT(r.date_reservation, '%Y-%m-%d') AS date_demande,
+      v.name AS nom_voiture,
+      c.nom AS nom_client
+    FROM reservation r
+    JOIN voiture v ON r.id_voiture = v.id
+    JOIN client c ON r.id_client = c.id
+    WHERE v.id_agence = ? AND r.confirmee = 0 AND r.annulee = 0 
+  `;
+
+  db.query(query, [id_agence], (err, results) => {
+    if (err) {
+      return callback(err);
+    }
+    callback(null, results);
+  });
+};
+
 
 
 module.exports = {
   getReservationsByClient,
   updateAnnulation,
-  getAllReservationsWithVoiture
+  getAllReservationsWithVoiture,
+  addReservation,
+  getReservationsEnAttenteByAgence
 };
-
-

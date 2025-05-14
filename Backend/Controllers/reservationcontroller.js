@@ -1,4 +1,4 @@
-const { getReservationsByClient,updateAnnulation } = require('../Models/reservationmodel');
+const { getReservationsByClient,updateAnnulation,addReservation,getReservationsEnAttenteByAgence} = require('../Models/reservationmodel');
 
 // Récupérer les réservations d'un client
 exports.getClientReservations = async (req, res) => {
@@ -58,4 +58,51 @@ exports.updateAnnulation = async (req, res) => {
       error: error.message || error
     });
   }
+};
+
+// Ajouter une nouvelle réservation
+exports.createReservation = async (req, res) => {
+  const clientId = req.client.id;
+  const { date_depart, date_retour, id_voiture } = req.body;
+
+  // Vérification des données reçues
+  if (!date_depart || !date_retour || !id_voiture) {
+    return res.status(400).json({ message: 'Données manquantes dans la requête' });
+  }
+
+  // Vérification des dates
+  if (new Date(date_depart) > new Date(date_retour)) {
+    return res.status(400).json({ message: 'La date de départ ne peut pas être après la date de retour' });
+  }
+
+  try {
+    // Ajouter la réservation
+    await addReservation({
+      date_depart,
+      date_retour,
+      id_voiture,
+      id_client: clientId,
+    });
+
+    res.status(201).json({ message: 'Réservation créée avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de la création de la réservation :', error);
+    res.status(500).json({ message: 'Erreur lors de la création de la réservation', error });
+  }
+};
+
+//pour la recuperation reservationSection de agence 
+exports.getReservationsEnAttente = (req, res) => {
+  const id_agence = req.params.id;
+  console.log("[DEBUG] ID Agence reçu:", id_agence); // ✅ Vérifiez la valeur
+  console.log(`Tentative de récupération des réservations pour l'agence ${id_agence}`); // ✅
+
+  getReservationsEnAttenteByAgence(id_agence, (err, reservations) => {
+    if (err) {
+      console.error("Erreur MySQL:", err); // ✅
+      return res.status(500).json({ message: 'Erreur serveur' });
+    }
+    console.log("Résultats trouvés:", reservations); // ✅
+    res.json(reservations);
+  });
 };

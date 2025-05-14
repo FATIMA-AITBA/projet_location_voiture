@@ -8,6 +8,7 @@ import CarOptions from "./CarOptions";
 
 // Définition du type pour les props
 interface Car {
+  id: number;
   name: string;
   image: { url: string };
   places: number;
@@ -15,7 +16,10 @@ interface Car {
   marque: string;
   kilometrageInclus: number;
   prixParJour: number;
+  tarifKmSupp: number;
+  tarifKmIlimitesParJour: number;
 }
+
 
 interface CarDetailsProps {
   car: Car;
