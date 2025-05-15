@@ -125,6 +125,19 @@ const getReservationsEnAttenteByAgence = (id_agence, callback) => {
   });
 };
 
+//confirmation 
+
+const confirmReservation = (reservationId) => {
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE reservation SET confirmee = 1 WHERE id_reservation = ?`;
+    db.query(sql, [reservationId], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+};
+
+
 
 
 module.exports = {
@@ -132,5 +145,6 @@ module.exports = {
   updateAnnulation,
   getAllReservationsWithVoiture,
   addReservation,
-  getReservationsEnAttenteByAgence
+  getReservationsEnAttenteByAgence,
+  confirmReservation,
 };

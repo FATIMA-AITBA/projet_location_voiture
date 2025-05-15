@@ -1,4 +1,4 @@
-const { getReservationsByClient,updateAnnulation,addReservation,getReservationsEnAttenteByAgence} = require('../Models/reservationmodel');
+const { getReservationsByClient,updateAnnulation,addReservation,getReservationsEnAttenteByAgence,confirmReservation} = require('../Models/reservationmodel');
 
 // Récupérer les réservations d'un client
 exports.getClientReservations = async (req, res) => {
@@ -105,4 +105,20 @@ exports.getReservationsEnAttente = (req, res) => {
     console.log("Résultats trouvés:", reservations); // ✅
     res.json(reservations);
   });
+};
+
+
+//confirme 
+
+
+exports.confirmReservation = async (req, res) => {
+  const reservationId = req.params.id;
+
+  try {
+    await confirmReservation(reservationId);
+    res.status(200).json({ message: 'Réservation confirmée avec succès' });
+  } catch (error) {
+    console.error("Erreur lors de la confirmation :", error);
+    res.status(500).json({ message: "Erreur serveur lors de la confirmation", error });
+  }
 };
