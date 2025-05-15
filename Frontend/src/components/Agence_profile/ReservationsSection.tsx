@@ -11,6 +11,7 @@ interface Reservation {
 
 const ReservationsSection: React.FC = () => {
   const [reservationsEnAttente, setReservationsEnAttente] = useState<Reservation[]>([]);
+  const [reservationsConfirmees, setReservationsConfirmees] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,24 +30,30 @@ const ReservationsSection: React.FC = () => {
       if (user.type !== "agence") throw new Error("Le profil connecté n'est pas une agence");
 
       const agenceId = user.id;
-
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
 
-      const resEnAttente = await fetch(
-        `http://localhost:5000/api/reservations/agence/${agenceId}/en-attente`,
-        { headers }
-      );
+      // Récupération des réservations en attente
+      const [resEnAttente, resConfirmees] = await Promise.all([
+        fetch(`http://localhost:5000/api/reservations/agence/${agenceId}/en-attente`, { headers }),
+        fetch(`http://localhost:5000/api/reservations/agence/${agenceId}/confirmees`, { headers })
+      ]);
 
-      if (!resEnAttente.ok) {
-        const body = await resEnAttente.json().catch(() => null);
-        throw new Error(body?.message || `Erreur ${resEnAttente.status}`);
+      // Gestion des erreurs
+      if (!resEnAttente.ok || !resConfirmees.ok) {
+        const errorText = await resEnAttente.text();
+        throw new Error(errorText || "Erreur lors de la récupération des réservations");
       }
 
-      const dataEnAttente = (await resEnAttente.json()) as Reservation[];
+      // Mise à jour des états
+      const dataEnAttente = await resEnAttente.json();
+      const dataConfirmees = await resConfirmees.json();
+      
       setReservationsEnAttente(dataEnAttente);
+      setReservationsConfirmees(dataConfirmees);
+
     } catch (err: any) {
       setError(err.message || "Erreur inconnue");
     } finally {
@@ -61,27 +68,44 @@ const ReservationsSection: React.FC = () => {
 
       const response = await fetch(`http://localhost:5000/api/reservations/${id_reservation}/confirmer`, {
         method: "PUT",
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}` 
+        },
+      });
+
+      if (!response.ok) throw new Error("Échec de la confirmation");
+      
+      // Rafraîchir toutes les données
+      await fetchReservations();
+
+    } catch (error: any) {
+      alert("Erreur lors de la confirmation : " + error.message);
+    }
+  };
+
+  const handleRetournee = async (id_reservation: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5000/api/reservations/${id_reservation}/retournee`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!response.ok) {
-        const body = await response.json().catch(() => null);
-        throw new Error(body?.message || `Erreur ${response.status}`);
-      }
+      if (!response.ok) throw new Error("Échec de la mise à jour");
+      
+      // Rafraîchir les données
+      await fetchReservations();
 
-      // Mise à jour locale des données
-      setReservationsEnAttente((prev) =>
-        prev.filter((reservation) => reservation.id_reservation !== id_reservation)
-      );
     } catch (error: any) {
-      alert("Erreur lors de la confirmation : " + error.message);
+      alert("Erreur : " + error.message);
     }
   };
 
-  const renderTable = (reservations: Reservation[]) => (
+  const renderTable = (reservations: Reservation[], type: 'attente' | 'confirmees') => (
     <div className="overflow-x-auto mb-8">
       <table className="table-auto w-full border-collapse text-sm">
         <thead>
@@ -104,22 +128,33 @@ const ReservationsSection: React.FC = () => {
                 <td className="border-t px-4 py-3">{r.date_retour.slice(0, 10)}</td>
                 <td className="border-t px-4 py-3">{r.date_demande?.slice(0, 10) || "—"}</td>
                 <td className="border-t px-4 py-3 space-x-2">
-                  <button
-                    onClick={() => handleConfirmer(r.id_reservation)}
-                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
-                  >
-                    Confirmer
-                  </button>
-                  <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
-                    Rejeter
-                  </button>
+                  {type === 'attente' ? (
+                    <>
+                      <button
+                        onClick={() => handleConfirmer(r.id_reservation)}
+                        className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
+                      >
+                        Confirmer
+                      </button>
+                      <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                        Rejeter
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => handleRetournee(r.id_reservation)}
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                    >
+                      Retournée
+                    </button>
+                  )}
                 </td>
               </tr>
             ))
           ) : (
             <tr>
               <td colSpan={6} className="text-center py-4">
-                Aucune réservation en attente.
+                Aucune réservation {type === 'attente' ? 'en attente' : 'confirmée'}.
               </td>
             </tr>
           )}
@@ -134,8 +169,18 @@ const ReservationsSection: React.FC = () => {
   return (
     <section className="my-6 p-6 bg-white shadow-lg rounded-lg">
       <h3 className="text-2xl font-semibold text-gray-800 mb-6">Mes Réservations</h3>
-      <h4 className="text-lg font-semibold text-gray-700 mb-2">En attente</h4>
-      {renderTable(reservationsEnAttente)}
+      
+      <div className="space-y-8">
+        <div>
+          <h4 className="text-lg font-semibold text-gray-700 mb-2">En attente</h4>
+          {renderTable(reservationsEnAttente, 'attente')}
+        </div>
+
+        <div>
+          <h4 className="text-lg font-semibold text-gray-700 mb-2">Confirmées</h4>
+          {renderTable(reservationsConfirmees, 'confirmees')}
+        </div>
+      </div>
     </section>
   );
 };
