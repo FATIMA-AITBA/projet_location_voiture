@@ -18,8 +18,8 @@ POST http://localhost:5000/api/clients/login
 Content-Type: application/json
 
 {
-  "email": "sara@example.com",
-  "password": "motdepasse2"
+  "email": "abdelilaherretby@gmail.com",
+  "password": "abcd123"
 }
 
 ###
@@ -109,3 +109,8 @@ Content-Type: application/json
 #########
 GET  http://localhost:5000/api/voitures/AllVoituresEtReservations
 Content-Type: application/json
+
+##########
+GET http://localhost:5000/api/reservations/41/reservation
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoiYWJkZWxpbGFoZXJyZXRieUBnbWFpbC5jb20iLCJpYXQiOjE3NDczNDkxOTIsImV4cCI6MTc0NzM0OTQ5Mn0.0N7x1W3Qa6uhyNliA8uiDunrHy-Dem7kBCVCTxmd0AQ

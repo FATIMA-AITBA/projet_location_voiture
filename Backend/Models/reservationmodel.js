@@ -22,7 +22,7 @@ const getReservationsByClient = (clientId) => {
         JOIN 
             agence a ON v.id_agence = a.id
         WHERE 
-            r.id_client = ?;
+            r.id_client = ? AND  r.annulee = 0;
 
     `;
 
@@ -244,6 +244,41 @@ const marquerRetournee = (reservationId) => {
   });
 };
 
+
+
+
+
+const getReservationById = (reservationId) => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT 
+        r.id_reservation,
+        r.id_voiture,
+        v.image,
+        v.name,
+        v.marque,
+        v.carType,
+        v.lieu_retrait,
+        DATE_FORMAT(r.date_depart, '%Y-%m-%d') AS date_depart,
+        v.lieu_retour,
+        DATE_FORMAT(r.date_retour, '%Y-%m-%d') AS date_retour
+      FROM 
+        reservation r
+      JOIN 
+        voiture v ON r.id_voiture = v.id
+      WHERE 
+        r.id_reservation = ?;
+    `;
+
+    db.query(sql, [reservationId], (err, results) => {
+      if (err) return reject(err);
+      resolve(results[0]); // une seule réservation
+    });
+  });
+};
+
+
+
 module.exports = {
   getReservationsByClient,
   updateAnnulation,
@@ -252,5 +287,6 @@ module.exports = {
   getReservationsEnAttenteByAgence,
   confirmReservation,
   getReservationsConfirmeesByAgence,
-  marquerRetournee 
+  marquerRetournee,
+  getReservationById
 };

@@ -110,7 +110,7 @@ const CarOptions: React.FC<CarOptionsProps> = ({
 
         alert("Votre demande de réservation est enregistrée");
 
-        navigate("/booking_page", {
+        /*navigate("/booking_page", {
           state: {
             total: calculateTotal(),
             car,
@@ -119,7 +119,7 @@ const CarOptions: React.FC<CarOptionsProps> = ({
             dateRetour,
             kilometrageType,
           },
-        });
+        });*/
       } catch (error) {
         console.error("Erreur lors de la réservation :", error);
         alert("Erreur lors de la création de la réservation");

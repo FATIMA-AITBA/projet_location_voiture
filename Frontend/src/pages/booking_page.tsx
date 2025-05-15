@@ -1,53 +1,54 @@
-"use client"; // Mark the file as a client component
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DriverDetails from '../components/Booking/DriverDetails';
-import BookingHeader from '../components/Booking/Bookingheader' ;
+import BookingHeader from '../components/Booking/Bookingheader';
 import BillingAddress from '../components/Booking/BillingAdress';
 import BookingFooter from '../components/Booking/BookingFooter';
 import BookingCar from '../components/Booking/BookingCar';
-import car1 from "../../public/images/bmwserie1.png"
 
- // ajouter par abdelilah
-import { useLocation} from "react-router-dom";
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+
 type LocationState = {
-  total: number;
-  differenceEnJours: number;
-  dateDepart: string;
-  dateRetour: string;
-  kilometrageType: string;
-  car: {
+  reservationId: number;
+};
+
+type ReservationAPIResponse = {
+  message: string;
+  reservations: {
+    id_reservation: number;
+    id_voiture: number;
+    image: string;
     name: string;
     marque: string;
-    places: number;
-    typeBoite: string;
-    fuelType: string;
     carType: string;
-    prixParJour: number;
-    kilometrageInclus: number;
-    tarifKmSupp: number;
-    tarifKmIlimitesParJour: number;
-    lieuDeRetrait: string;
-    lieuDeRetour: string;
-    image: {
-      url: string;
-    };
+    lieu_retrait: string;
+    date_depart: string;
+    lieu_retour: string;
+    date_retour: string;
   };
-}
+};
+
+const calculateDaysDifference = (dateDepart: string, dateRetour: string): number => {
+  const departDate = new Date(dateDepart + "T00:00:00Z");
+  const retourDate = new Date(dateRetour + "T00:00:00Z");
+
+  if (isNaN(departDate.getTime()) || isNaN(retourDate.getTime())) {
+    console.error("Erreur de conversion de date.");
+    return NaN;
+  }
+
+  const timeDifference = retourDate.getTime() - departDate.getTime();
+  return timeDifference / (1000 * 3600 * 24);
+};
 
 const BookingForm = () => {
-  
-  // ajouter par abdelilah
   const location = useLocation();
   const state = location.state as LocationState | null;
-  const total = state?.total;
-   const car = state?.car;
-  const differenceEnJours = state?.differenceEnJours;
-  const dateDepart = state?.dateDepart;
-  const dateRetour = state?.dateRetour;
-  const kilometrageType = state?.kilometrageType;
+  const reservationId = state?.reservationId;
 
-  
+  const [reservationData, setReservationData] = useState<ReservationAPIResponse["reservations"] | null>(null);
 
   const [formData, setFormData] = useState({
     company: '',
@@ -69,59 +70,71 @@ const BookingForm = () => {
     });
   };
 
+  useEffect(() => {
+    const fetchReservation = async () => {
+      if (!reservationId) return;
+
+      // 🔐 Token récupéré dynamiquement (à adapter selon ton système d’authentification)
+      const token = localStorage.getItem('token'); // ou via Clerk/Auth context
+
+      try {
+        const response = await axios.get<ReservationAPIResponse>(
+          `http://localhost:5000/api/reservations/${reservationId}/reservation`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setReservationData(response.data.reservations);
+      } catch (error) {
+        console.error("Erreur lors de la récupération de la réservation :", error);
+      }
+    };
+
+    fetchReservation();
+  }, [reservationId]);
+
   return (
     <div className="min-h-screen bg-white p-4">
-      {/* Première section */}
-      <BookingHeader total={total} />
-
-      {/* ********************************************************* */}
-      
+      <BookingHeader />
 
       <div className="flex flex-col lg:flex-row gap-6 h-full">
-  {/* Gauche : 2/3 */}
-  <div className="flex flex-col gap-6 lg:w-2/3 w-full ml-[32px]">
-  <DriverDetails formData={formData} handleInputChange={handleInputChange} />
-  <BillingAddress formData={formData} handleInputChange={handleInputChange} />
-</div>
+        <div className="flex flex-col gap-6 lg:w-2/3 w-full ml-[32px]">
+          <DriverDetails formData={formData} handleInputChange={handleInputChange} />
+          <BillingAddress formData={formData} handleInputChange={handleInputChange} />
+        </div>
 
+        <div className="lg:w-1/3 w-full px-6">
+          <div className="sticky top-6">
+            {reservationData && (
+              <BookingCar
+                image={`/images/${reservationData.image}`} // À adapter selon ta structure d’assets
+                name={reservationData.name}
+                subtitle={`${reservationData.marque} | ${reservationData.carType}`}
+                days={calculateDaysDifference(reservationData.date_depart, reservationData.date_retour)}
+                pickupLocation={reservationData.lieu_retrait}
+                pickupDate={reservationData.date_depart}
+                pickupTime="13:00"
+                returnLocation={reservationData.lieu_retour}
+                returnDate={reservationData.date_retour}
+                returnTime="08:30"
+                features={[
+                  "Assurance au tiers",
+                  "Assistance dépannage 24/7",
+                  "Kilométrage: Illimité",
+                  "Option de paiement: Restez flexible - Payez à la prise en charge, annulez et modifiez gratuitement avant l'heure de la prise en charge"
+                ]}
+              />
+            )}
+          </div>
+        </div>
+      </div>
 
-  {/* Droite : 1/3 */}
-{/* Droite : 1/3 */}
-<div className="lg:w-1/3 w-full px-6">
-  <div className="sticky top-6">
-  <BookingCar
-  image={car?.image?.url}
-  name={car?.name}
-  subtitle={`${car.marque} | ${car.carType}`}
-  days={differenceEnJours}
-  pickupLocation={car?.lieuDeRetrait}
-  pickupDate={dateDepart}
-  pickupTime="13:00"
-  returnLocation={car?.lieuDeRetour}
-  returnDate={dateRetour}
-  returnTime="08:30"
-  features={[
-    "Assurance au tiers",
-    "Assistance dépannage 24/7",
-    `Kilométrage: ${kilometrageType}`,
-    "Option de paiement: Restez flexible - Payez à la prise en charge, annulez et modifiez gratuitement avant l'heure de la prise en charge"
-  ]}
-/>
-  </div>
-</div>
-
-</div>
-
-
-
-
-{/* ********************************************************* */}
-
-      {/* Section footer */}
-      <BookingFooter total={total} />
+      <BookingFooter />
     </div>
   );
 };
 
 export default BookingForm;
-

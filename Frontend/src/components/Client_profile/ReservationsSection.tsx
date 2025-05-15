@@ -1,9 +1,8 @@
-// Importations nécessaires
 import React, { useEffect, useState } from "react";
 import Notification from "./Notification";
 import ActionButton from "./ActionButton";
+import { useNavigate } from "react-router-dom";
 
-// Définition du type pour une réservation
 type Reservation = {
   id: number;
   dateReservation: string;
@@ -17,28 +16,17 @@ type Reservation = {
   annulee: boolean;
 };
 
-// Composant principal
 const ReservationsSection: React.FC = () => {
-  // État contenant la liste des réservations
   const [reservations, setReservations] = useState<Reservation[]>([]);
-
-  // État pour gérer l'affichage des notifications (message et type)
   const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null);
-
-  // État pour gérer le chargement des données
   const [loading, setLoading] = useState<boolean>(true);
-
-  // État pour gérer l'ID de la réservation en cours de mise à jour
   const [updatingId, setUpdatingId] = useState<number | null>(null);
 
-
-  // Fonction pour afficher une notification temporairement
   const showNotification = (message: string, type: "success" | "error") => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 8000);
   };
 
-  // Récupération des réservations au chargement initial du composant
   useEffect(() => {
     const fetchReservations = async () => {
       try {
@@ -54,20 +42,17 @@ const ReservationsSection: React.FC = () => {
 
         const data = await response.json();
 
-        // Gestion des erreurs liées au token (expiré ou invalide)
         if (!response.ok) {
           if (data.message === "Token invalide" || data.message === "Token expiré") {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
             window.location.href = "/login_client";
           } else {
-            // Gestion des autres erreurs du backend
             showNotification(data.message || "Erreur serveur", "error");
           }
           return;
         }
 
-        // Formatage des données si la réponse est valide
         if (data.reservations) {
           const formatted: Reservation[] = data.reservations.map((res: any) => ({
             id: res.id_reservation,
@@ -81,14 +66,12 @@ const ReservationsSection: React.FC = () => {
             lieuRetour: res.lieu_retour,
             annulee: res.annulee === 1,
           }));
-
           setReservations(formatted);
         }
       } catch (error) {
-        // Gestion des erreurs réseau ou techniques
         console.error("Erreur lors du chargement des réservations :", error);
         showNotification("Erreur lors du chargement des réservations", "error");
-      }finally {
+      } finally {
         setLoading(false);
       }
     };
@@ -96,7 +79,7 @@ const ReservationsSection: React.FC = () => {
     fetchReservations();
   }, []);
 
-  // Fonction pour mettre à jour l'annulation ou la confirmation d'une réservation
+ // Fonction pour mettre à jour l'annulation ou la confirmation d'une réservation
   const updateAnnulation = async (id: number, newStatus: boolean) => {
     setUpdatingId(id); // active le loader
     try {
@@ -162,35 +145,25 @@ const ReservationsSection: React.FC = () => {
     updateAnnulation(id, true);
   };
 
-  // Handler pour confirmer une réservation annulée
-  const handleConfirm = (id: number) => {
-    updateAnnulation(id, false);
-  };
+  const navigate = useNavigate();
 
-  // Affichage  du composant
-   return (
-    <section className="my-6 p-6 bg-white shadow-lg rounded-lg">
-      <h3 className="text-2xl font-semibold text-gray-800 mb-6">Mes Réservations</h3>
-  
-      {/* Affichage de la notification */} 
-      {notification && (
-        <Notification
-          message={notification.message}
-          type={notification.type}
-          onClose={() => setNotification(null)}
-        />
-      )}
+  const handleNavigate = (id: number) => {
+  navigate("/booking_page", {
+    state: {
+      reservationId: id
+    }
+  });
+};
 
-      {/* Affichage d'un loader pendant le chargement des réservations */}
-      {loading ? (
-          <div className="fixed inset-0 z-100 flex items-center justify-center bg-white bg-opacity-70">
-          <div className="p-6 bg-white  flex items-center justify-center">
-            <img src="/images/load.gif" alt="Chargement en cours...." className="w-28 h-28" />
-          </div>
-        </div>
-      ) : (
-        // Affichage du tableau des réservations
-        <div className="overflow-x-auto">
+
+  const demandesNonConfirmees = reservations.filter(res => !res.confirmee);
+  const demandesConfirmees = reservations.filter(res => res.confirmee);
+
+  const renderTable = (title: string, data: Reservation[]) => (
+    <>
+      <h3 className="text-2xl font-semibold text-gray-800 mb-4">{title}</h3>
+      {data.length > 0 ? (
+        <div className="overflow-x-auto mb-10">
           <table className="table-auto w-full border-collapse text-sm">
             <thead>
               <tr className="bg-gray-100 text-gray-700">
@@ -202,54 +175,82 @@ const ReservationsSection: React.FC = () => {
                 <th className="text-left px-4 py-2">Lieu de départ</th>
                 <th className="text-left px-4 py-2">Date retour</th>
                 <th className="text-left px-4 py-2">Lieu de retour</th>
-                <th className="text-left px-4 py-2">Action</th>
+                {title === "Demandes confirmées" && (
+                  <th className="text-left px-4 py-2">Action</th>
+                )}
               </tr>
             </thead>
             <tbody>
-              {reservations.map((res) => (
+              {data.map((res) => (
                 <tr key={res.id} className="hover:bg-gray-50 transition">
                   <td className="border-t px-4 py-3">{res.dateReservation}</td>
                   <td className="border-t px-4 py-3">{res.vehicule}</td>
                   <td className="border-t px-4 py-3">{res.agence}</td>
-                  <td
-                    className={`border-t px-4 py-3 ${
-                      res.confirmee ? "text-blue-600" : "text-yellow-600"
-                    }`}
-                  >
+                  <td className={`border-t px-4 py-3 ${res.confirmee ? "text-blue-600" : "text-yellow-600"}`}>
                     {res.confirmee ? "Confirmée" : "En attente"}
                   </td>
                   <td className="border-t px-4 py-3">{res.dateDepart}</td>
                   <td className="border-t px-4 py-3">{res.lieuRetrait}</td>
                   <td className="border-t px-4 py-3">{res.dateRetour}</td>
                   <td className="border-t px-4 py-3">{res.lieuRetour}</td>
-                  <td className="border-t px-4 py-3">
-                    {res.annulee ? (
-                      // Bouton d'action générique affichant un loader uniquement pour l'élément en cours de traitement (basé sur l'ID)
-                      <ActionButton
-                            loading={updatingId === res.id}
-                            onClick={() => handleConfirm(res.id)}
-                            text="Confirmer"
-                            loadingText="Confirmation..."
-                            color="green"
-                      />
-                        ) : (
-                      <ActionButton
-                            loading={updatingId === res.id}
-                            onClick={() => handleCancel(res.id)}
-                            text="Annuler"
-                            loadingText="Annulation..."
-                            color="red"
-                      />
+                
+                    {title === "Demandes confirmées" && (
+                      <td className="border-t px-4 py-3">
+                          <div className="flex gap-x-2">
+                            <ActionButton
+                              loading={updatingId === res.id}
+                              onClick={() => handleCancel(res.id)}
+                              text="Annuler"
+                              loadingText="Annulation..."
+                              color="red"
+                            />
+                            <ActionButton
+                              loading={false}
+                              onClick={() => handleNavigate(res.id)}
+                              text="Réserver"
+                              loadingText="Compléter la réservation..."
+                              color="blue"
+                            />
+                          </div>
+                      </td>
+
                     )}
-                  </td>
+                
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      ) : (
+        <p className="text-gray-600 mb-10">Aucune réservation dans cette catégorie.</p>
+      )}
+    </>
+  );
+
+  return (
+    <section className="my-6 p-6 bg-white shadow-lg rounded-lg">
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
+
+      {loading ? (
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-white bg-opacity-70">
+          <div className="p-6 bg-white flex items-center justify-center">
+            <img src="/images/load.gif" alt="Chargement en cours..." className="w-28 h-28" />
+          </div>
+        </div>
+      ) : (
+        <>
+          {renderTable("Mes demandes", demandesNonConfirmees)}
+          {renderTable("Demandes confirmées", demandesConfirmees)}
+        </>
       )}
     </section>
   );
-}
+};
 
 export default ReservationsSection;
