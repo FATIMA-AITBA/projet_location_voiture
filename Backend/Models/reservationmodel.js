@@ -114,7 +114,7 @@ const getReservationsEnAttenteByAgence = (id_agence, callback) => {
     FROM reservation r
     JOIN voiture v ON r.id_voiture = v.id
     JOIN client c ON r.id_client = c.id
-    WHERE v.id_agence = ? AND r.confirmee = 0 AND r.annulee = 0 
+    WHERE v.id_agence = ? AND r.confirmee = 0 AND r.annulee = 0 AND r.reservee=0
   `;
 
   db.query(query, [id_agence], (err, results) => {
@@ -182,11 +182,13 @@ const getReservationsConfirmeesByAgence = (id_agence, callback) => {
       DATE_FORMAT(r.date_retour, '%Y-%m-%d') AS date_retour,
       DATE_FORMAT(r.date_reservation, '%Y-%m-%d') AS date_demande,
       v.name AS nom_voiture,
-      c.nom AS nom_client
+      c.nom AS nom_client,
+      r.annulee,
+      r.reservee
     FROM reservation r
     JOIN voiture v ON r.id_voiture = v.id
     JOIN client c ON r.id_client = c.id
-    WHERE v.id_agence = ? AND r.confirmee = 1 AND r.annulee = 0 
+    WHERE v.id_agence = ? AND r.confirmee = 1;
   `;
 
   db.query(query, [id_agence], (err, results) => {
@@ -194,7 +196,6 @@ const getReservationsConfirmeesByAgence = (id_agence, callback) => {
     callback(null, results);
   });
 };
-
 
 //gerer bouton retourneee
 
@@ -311,3 +312,4 @@ module.exports = {
   getReservationById,
   confirmerReservation
 };
+
