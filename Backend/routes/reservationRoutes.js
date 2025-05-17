@@ -4,7 +4,8 @@ const router = express.Router();
 const {getClientReservations,
        updateAnnulation,createReservation
        ,getReservationsEnAttente ,confirmReservation ,
-       marquerRetournee,getReservationsConfirmees,getReservationById,confirmerReservation
+       marquerRetournee,getReservationsConfirmees,getReservationById,confirmerReservation,
+        deleteReservation
       } = require('../Controllers/reservationcontroller'); 
 const { authenticateClient } = require('../Middlewares/authMidleware');
 
@@ -34,6 +35,9 @@ router.get('/:id/reservation',authenticateClient,getReservationById); // ✅ Rou
 // ✅ Route pour confirmer une réservation par client
 router.get('/client/:id/confirmer',authenticateClient ,confirmerReservation); // ✅ Appelle la fonction importée
 
+
+//route pour la suppression en cas d'annuler ;
+router.delete('/:id', deleteReservation);
 
 
 

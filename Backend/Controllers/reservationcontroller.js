@@ -5,8 +5,10 @@ const { getReservationsByClient,
        confirmReservation,
        getReservationsConfirmeesByAgence,
        marquerRetournee,
-       getReservationById,
        confirmerReservation,
+       deleteReservation,
+       getReservationById,
+       
       } = require('../Models/reservationmodel');
 
 // Récupérer les réservations d'un client
@@ -150,17 +152,22 @@ exports.getReservationsConfirmees = (req, res) => {
 
 exports.marquerRetournee = async (req, res) => {
   try {
-    await marquerRetournee(req.params.id);
-    res.status(200).json({ message: 'Voiture marquée comme disponible' });
+    const result = await marquerRetournee(req.params.id);
+    
+    const message = result.deleted 
+      ? "Réservation annulée supprimée et voiture libérée" 
+      : "Voiture marquée comme disponible";
+
+    res.status(200).json({ message });
+
   } catch (error) {
-    console.error('Erreur:', error);
+    console.error('[ERREUR]', error);
     res.status(500).json({ 
-      message: "Erreur lors de la mise à jour",
-      error: error.message
+      message: error.message || "Erreur serveur",
+      error: error.message 
     });
   }
 };
-
 
 
 exports.getReservationById = async (req, res) => {
@@ -203,5 +210,25 @@ exports.confirmerReservation = async (req, res) => {
   } catch (error) {
     console.error('Erreur lors de la confirmation :', error.message);
     res.status(500).json({ message: 'Erreur lors de la confirmation de la réservation', error: error.message });
+  }
+};
+
+exports.deleteReservation = async (req, res) => {
+  const reservationId = req.params.id;
+  try {
+    // Récupérer la résa pour savoir quelle voiture libérer
+    const reservation = await getReservationById(reservationId);
+    if (!reservation) return res.status(404).json({ message: 'Réservation introuvable' });
+
+    // 1. Marquer la voiture disponible
+    await marquerRetournee(reservationId);
+
+    // 2. Supprimer la réservation
+    await deleteReservation(reservationId);
+
+    res.status(200).json({ message: 'Réservation annulée et voiture libérée' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
 };

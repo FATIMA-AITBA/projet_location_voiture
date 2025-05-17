@@ -201,50 +201,48 @@ const getReservationsConfirmeesByAgence = (id_agence, callback) => {
 
 const marquerRetournee = (reservationId) => {
   return new Promise((resolve, reject) => {
-    // Commencer une transaction
     db.beginTransaction(async (err) => {
       if (err) return reject(err);
 
       try {
-        // 1. Récupérer l'ID de la voiture associée
-        const [reservation] = await new Promise((resolve, reject) => {
-          db.query(
-            'SELECT id_voiture FROM reservation WHERE id_reservation = ?',
-            [reservationId],
-            (err, results) => {
-              if (err) reject(err);
-              else resolve(results);
-            }
+        // 1. Récupérer TOUTES les données nécessaires
+        const [rows] = await db.promise().query(
+          'SELECT id_voiture, CAST(annulee AS SIGNED) AS annulee FROM reservation WHERE id_reservation = ?',
+          [reservationId]
+        );
+
+        if (rows.length === 0) throw new Error('Réservation introuvable');
+        const { id_voiture, annulee } = rows[0];
+
+        // 2. Debug : Ajouter des logs critiques
+        console.log(`[DEBUG] Réservation ID ${reservationId} - Annulée: ${annulee}`);
+
+        // 3. Mise à jour voiture
+        await db.promise().query(
+          'UPDATE voiture SET disponible = 1 WHERE id = ?', 
+          [id_voiture]
+        );
+
+        // 4. Suppression conditionnelle AVEC vérification stricte
+        if (annulee === 1) {
+          console.log(`[ACTION] Suppression réservation ${reservationId}`);
+          await db.promise().query(
+            'DELETE FROM reservation WHERE id_reservation = ?',
+            [reservationId]
           );
-        });
+        }
 
-        if (!reservation) throw new Error('Réservation introuvable');
-
-        // 2. Mettre à jour la disponibilité de la voiture
-        await new Promise((resolve, reject) => {
-          db.query(
-            'UPDATE voiture SET disponible = 1 WHERE id = ?',
-            [reservation.id_voiture],
-            (err, results) => {
-              if (err) reject(err);
-              else resolve(results);
-            }
-          );
-        });
-
-        // Valider la transaction
         db.commit((err) => {
           if (err) reject(err);
-          else resolve();
+          resolve({ deleted: annulee === 1 });
         });
+
       } catch (error) {
-        // Annuler la transaction en cas d'erreur
         db.rollback(() => reject(error));
       }
     });
   });
 };
-
 
 
 
@@ -299,6 +297,21 @@ const confirmerReservation = (reservationId) => {
 };
 
 
+//supprimer reservation 
+const deleteReservation = (reservationId) => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      DELETE FROM reservation
+      WHERE id_reservation = ?;
+    `;
+    db.query(sql, [reservationId], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+};
+
+
 
 module.exports = {
   getReservationsByClient,
@@ -310,6 +323,7 @@ module.exports = {
   getReservationsConfirmeesByAgence,
   marquerRetournee,
   getReservationById,
-  confirmerReservation
+  confirmerReservation,
+  deleteReservation
 };
 
