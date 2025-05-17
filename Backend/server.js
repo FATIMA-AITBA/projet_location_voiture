@@ -9,6 +9,7 @@ const agenceRoutes = require('./routes/agenceRoutes');  // Routes pour les agenc
 const reservationRoutes = require('./routes/reservationRoutes');
 const reservationHistoryRoutes = require('./routes/reservationHistoryRoutes'); // Routes pour les réservations
 const voitureRoutes = require('./routes/voitureRoutes'); // Routes pour les voitures
+const factureRoutes = require('./routes/factureRoutes'); // Routes pour les factures
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/api/agences', agenceRoutes); // Route pour les agences
 app.use('/api/reservations', reservationRoutes); // Route pour les réservations
 app.use('/api/reservations-historique', reservationHistoryRoutes); // Route pour les réservations
 app.use('/api/voitures', voitureRoutes); // Route pour les voitures
+app.use('/api/factures', factureRoutes); // Route pour les factures
 
 
 

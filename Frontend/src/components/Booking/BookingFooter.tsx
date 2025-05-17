@@ -2,7 +2,12 @@
 
 import React from 'react';
 
-const BookingFooter: React.FC = () => {
+type BookingFooterProps = {
+  onSubmit: () => void;
+};
+
+
+const BookingFooter: React.FC<BookingFooterProps>  = ( { onSubmit }) => {
   return (
     <div className="w-full bg-gray-100 p-6 space-y-6">
       {/* Total avec prix aligné à droite */}
@@ -32,7 +37,8 @@ const BookingFooter: React.FC = () => {
 
       {/* Bouton réserver */}
       <div>
-        <button className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200">
+        <button className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200"
+          onClick={onSubmit}>
           Réserver
         </button>
       </div>

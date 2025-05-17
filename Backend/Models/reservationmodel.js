@@ -279,6 +279,26 @@ const getReservationById = (reservationId) => {
 
 
 
+const confirmerReservation = (reservationId) => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      UPDATE reservation
+      SET reservee = 1
+      WHERE id_reservation = ?;
+    `;
+
+    db.query(sql, [reservationId], (err, results) => {
+      if (err) return reject(err);
+      if (results.affectedRows === 0) {
+        return reject(new Error('Réservation non trouvée'));
+      }
+      resolve(results);
+    });
+  });
+};
+
+
+
 module.exports = {
   getReservationsByClient,
   updateAnnulation,
@@ -288,5 +308,6 @@ module.exports = {
   confirmReservation,
   getReservationsConfirmeesByAgence,
   marquerRetournee,
-  getReservationById
+  getReservationById,
+  confirmerReservation
 };

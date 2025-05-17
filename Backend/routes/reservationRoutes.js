@@ -4,7 +4,7 @@ const router = express.Router();
 const {getClientReservations,
        updateAnnulation,createReservation
        ,getReservationsEnAttente ,confirmReservation ,
-       marquerRetournee,getReservationsConfirmees,getReservationById
+       marquerRetournee,getReservationsConfirmees,getReservationById,confirmerReservation
       } = require('../Controllers/reservationcontroller'); 
 const { authenticateClient } = require('../Middlewares/authMidleware');
 
@@ -30,6 +30,10 @@ router.put('/:id/retournee', marquerRetournee);
 router.get('/agence/:id/en-attente', getReservationsEnAttente);  // ✅ Appelle la fonction importée
 
 router.get('/:id/reservation',authenticateClient,getReservationById); // ✅ Route pour récupérer une réservation par ID
+
+// ✅ Route pour confirmer une réservation par client
+router.get('/client/:id/confirmer',authenticateClient ,confirmerReservation); // ✅ Appelle la fonction importée
+
 
 
 

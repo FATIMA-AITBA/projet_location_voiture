@@ -113,4 +113,31 @@ Content-Type: application/json
 ##########
 GET http://localhost:5000/api/reservations/41/reservation
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoiYWJkZWxpbGFoZXJyZXRieUBnbWFpbC5jb20iLCJpYXQiOjE3NDczNDkxOTIsImV4cCI6MTc0NzM0OTQ5Mn0.0N7x1W3Qa6uhyNliA8uiDunrHy-Dem7kBCVCTxmd0AQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoiYWJkZWxpbGFoZXJyZXRieUBnbWFpbC5jb20iLCJpYXQiOjE3NDczNDkxOTIsImV4cCI6MTc0NzM0OTQ5Mn0.0N7x1W3Qa6uhyNliA8uiDunrHy-
+
+
+
+
+##################
+POST  http://localhost:5000/api/factures/createFacture
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoiYWJkZWxpbGFoZXJyZXRieUBnbWFpbC5jb20iLCJpYXQiOjE3NDc0MTc3MjQsImV4cCI6MTc0NzQxODAyNH0.XhgFNU0cNIOXuUGm5u2tAk4WC-ZUWBTWi-r6o3860qw
+
+{
+  "id_reservation": 4,
+  "entreprise": "TechVision SARL",
+  "nom_chauffeur": "Youssef",
+  "prenom_chauffeur": "Benali",
+  "email_chauffeur": "youssef.benali@example.com",
+  "telephone_chauffeur": "0612345678",
+  "pays": "Maroc",
+  "rue": "10 Rue des Lilas",
+  "code_postal": "10000",
+  "ville": "Rabat"
+}
+
+
+########
+GET http://localhost:5000/api/reservations/client/4/confirmer
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoiYWJkZWxpbGFoZXJyZXRieUBnbWFpbC5jb20iLCJpYXQiOjE3NDc0NDE3NTQsImV4cCI6MTc0NzQ0MjA1NH0.wZepzq16I2BrqPA4nvwFESSYpqjAzJ9vWzbKnHXU4Vs
