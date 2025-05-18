@@ -205,27 +205,49 @@ const marquerRetournee = (reservationId) => {
       if (err) return reject(err);
 
       try {
-        // 1. Récupérer TOUTES les données nécessaires
+        // 1. Récupération des données étendues
         const [rows] = await db.promise().query(
-          'SELECT id_voiture, CAST(annulee AS SIGNED) AS annulee FROM reservation WHERE id_reservation = ?',
+          `SELECT 
+            id_voiture, 
+            id_client,
+            date_depart,
+            date_retour,
+            date_reservation,
+            CAST(annulee AS SIGNED) AS annulee,
+            CAST(reservee  AS SIGNED) AS reservee 
+           FROM reservation 
+           WHERE id_reservation = ?`,
           [reservationId]
         );
 
         if (rows.length === 0) throw new Error('Réservation introuvable');
-        const { id_voiture, annulee } = rows[0];
+        const reservation = rows[0];
 
-        // 2. Debug : Ajouter des logs critiques
-        console.log(`[DEBUG] Réservation ID ${reservationId} - Annulée: ${annulee}`);
-
-        // 3. Mise à jour voiture
+        // 2. Mise à jour disponibilité voiture (comportement existant)
         await db.promise().query(
-          'UPDATE voiture SET disponible = 1 WHERE id = ?', 
-          [id_voiture]
+          'UPDATE voiture SET disponible = 1 WHERE id = ?',
+          [reservation.id_voiture]
         );
 
-        // 4. Suppression conditionnelle AVEC vérification stricte
-        if (annulee === 1) {
-          console.log(`[ACTION] Suppression réservation ${reservationId}`);
+        // 3. Nouveau traitement pour réservation confirmée
+        if (reservation.reservee === 1) {
+          // Archivage dans l'historique
+          await db.promise().query(
+            `INSERT INTO historique_reservation 
+             (id_client, id_voiture, date_depart, date_retour, date_reservation)
+             VALUES (?, ?, ?, ?, ?)`,
+            [
+              reservation.id_client,
+              reservation.id_voiture,
+              reservation.date_depart,
+              reservation.date_retour,
+              reservation.date_reservation
+            ]
+          );
+        }
+
+        // 4. Suppression conditionnelle (comportement existant étendu)
+        if (reservation.annulee === 1 || reservation.reservee === 1) {
           await db.promise().query(
             'DELETE FROM reservation WHERE id_reservation = ?',
             [reservationId]
@@ -234,7 +256,10 @@ const marquerRetournee = (reservationId) => {
 
         db.commit((err) => {
           if (err) reject(err);
-          resolve({ deleted: annulee === 1 });
+          resolve({ 
+            deleted: reservation.annulee === 1 || reservation.reservee === 1,
+            archived: reservation.reservee === 1
+          });
         });
 
       } catch (error) {

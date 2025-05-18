@@ -154,9 +154,14 @@ exports.marquerRetournee = async (req, res) => {
   try {
     const result = await marquerRetournee(req.params.id);
     
-    const message = result.deleted 
-      ? "Réservation annulée supprimée et voiture libérée" 
-      : "Voiture marquée comme disponible";
+    let message;
+    if (result.archived) {
+      message = "Réservation archivée dans l'historique et voiture marquée comme disponible";
+    } else if (result.deleted) {
+      message = "Réservation annulée supprimée et voiture marquée comme disponible";
+    } else {
+      message = "Voiture marquée comme disponible";
+    }
 
     res.status(200).json({ message });
 
