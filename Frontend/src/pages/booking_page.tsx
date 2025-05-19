@@ -27,6 +27,14 @@ type ReservationAPIResponse = {
     date_depart: string;
     lieu_retour: string;
     date_retour: string;
+    prix_journalier: string;
+    montantHT: string;
+    TVA: string;
+    supp_local: string;
+    total_frais: string;
+    montantTTC: string;
+    kilometrageType: string;
+
   };
 };
 
@@ -182,7 +190,7 @@ const BookingForm = () => {
 
   return (
     <div className="min-h-screen bg-white p-4 relative">
-      <BookingHeader />
+      <BookingHeader total={reservationData?.montantTTC} />
 
       <div className="flex flex-col lg:flex-row gap-6 h-full">
         <div className="flex flex-col gap-6 lg:w-2/3 w-full ml-[32px]">
@@ -207,7 +215,7 @@ const BookingForm = () => {
                 features={[
                   "Assurance au tiers",
                   "Assistance dépannage 24/7",
-                  "Kilométrage: Illimité",
+                  `Kilométrage: ${reservationData.kilometrageType}`,
                   "Option de paiement: Restez flexible - Payez à la prise en charge, annulez et modifiez gratuitement avant l'heure de la prise en charge"
                 ]}
               />
@@ -216,7 +224,7 @@ const BookingForm = () => {
         </div>
       </div>
 
-      <BookingFooter onSubmit={handleSubmit} disabled={loading} />
+      <BookingFooter onSubmit={handleSubmit} disabled={loading}   total={reservationData?.montantTTC} />
 
       {popupState && (
         <StatusPopup
@@ -226,10 +234,8 @@ const BookingForm = () => {
           formData={formData}
           reservationData={reservationData}
           daysDifference={daysDifference}
-          montantHT="123"
-          montantTTC="123"
-          Typekilometrage="Illimité"
           TypeAssurance="Assurance au tiers"
+          clientdata={clientData}
         />
       )}
     </div>

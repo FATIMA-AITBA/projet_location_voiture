@@ -30,15 +30,9 @@ const getReservationsHistoryByClient = (clientId) => {
 };
 
 
-// Supprimer une réservation historique dans la base de données
-const deleteReservationHistorique = async (id) => {
-  const deleteSql = "DELETE FROM historique_reservation WHERE id_historique = ?";
-  await db.execute(deleteSql, [id]);
-};
 
 
 module.exports = {
     getReservationsHistoryByClient,
-    deleteReservationHistorique,
   };
   

@@ -32,9 +32,9 @@ const CarOptions: React.FC<CarOptionsProps> = ({
   const [selectedValue, setSelectedValue] = useState<string | number>(
     car.prixParJour || ""
   );
-  const [kilometrageType, setKilometrageType] = useState<
-    "limité" | "illimité"
-  >("limité");
+  const [kilometrageType, setKilometrageType] = useState<"limité" | "illimité">(
+    "limité"
+  );
 
   const navigate = useNavigate();
   const supplementLocal = 5;
@@ -93,33 +93,48 @@ const CarOptions: React.FC<CarOptionsProps> = ({
     const user = userString ? JSON.parse(userString) : null;
 
     if (token && user && user.type === "client") {
+      const prixJournalier = parseFloat(selectedValue.toString());
+      const montantHT = calculateMontantHT();
+      const tva = calculateTVA();
+      const suppLocal = supplementLocal;
+      const frais = totalFrais();
+      const montantTTC = calculateTotal();
+
+      const dataToSend = {
+        date_depart: dateDepart,
+        date_retour: dateRetour,
+        id_voiture: car.id,
+        prix_journalier: prixJournalier,
+        montantHT: montantHT,
+        TVA: tva,
+        supp_local: suppLocal,
+        total_frais: frais,
+        montantTTC: montantTTC,
+        kilometrageType: kilometrageType,
+      };
+
       try {
-        await axios.post(
-          "http://localhost:5000/api/reservations",
-          {
-            date_depart: dateDepart,
-            date_retour: dateRetour,
-            id_voiture: car.id,
+        await axios.post("http://localhost:5000/api/reservations", dataToSend, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        });
 
         alert("Votre demande de réservation est enregistrée");
-
-        /*navigate("/booking_page", {
+        // Si tu veux naviguer après la réservation, décommente ce bloc :
+        /*
+        navigate("/booking_page", {
           state: {
-            total: calculateTotal(),
+            total: montantTTC,
             car,
             differenceEnJours,
             dateDepart,
             dateRetour,
             kilometrageType,
           },
-        });*/
+        });
+        */
       } catch (error) {
         console.error("Erreur lors de la réservation :", error);
         alert("Erreur lors de la création de la réservation");
@@ -200,9 +215,7 @@ const CarOptions: React.FC<CarOptionsProps> = ({
           <div className="flex justify-between w-full">
             <div>
               <p className="font-medium">Kilomètres illimités</p>
-              <p className="text-sm text-gray-500">
-                Tous les kilomètres sont inclus
-              </p>
+              <p className="text-sm text-gray-500">Tous les kilomètres sont inclus</p>
             </div>
             <span className="text-sm font-semibold self-start">
               + {car.tarifKmIlimitesParJour} MAD / jour
@@ -215,9 +228,7 @@ const CarOptions: React.FC<CarOptionsProps> = ({
         <div className="text-lg font-semibold">
           <span>{selectedValue} MAD</span>
           <span className="text-sm text-gray-500"> / jour</span>
-          <div className="text-sm text-gray-600">
-            {calculateTotal()} MAD total
-          </div>
+          <div className="text-sm text-gray-600">{calculateTotal()} MAD total</div>
         </div>
         <button
           onClick={handleNavigation}

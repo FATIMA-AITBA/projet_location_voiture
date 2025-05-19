@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import Notification from "./Notification";
 import ActionButton from "./ActionButton";
 import { useNavigate } from "react-router-dom";
+import { FaCheck } from "react-icons/fa6";
 
 type Reservation = {
+  reservee: boolean;
   id: number;
   dateReservation: string;
   vehicule: string;
@@ -65,6 +67,7 @@ const ReservationsSection: React.FC = () => {
             dateRetour: res.date_retour,
             lieuRetour: res.lieu_retour,
             annulee: res.annulee === 1,
+            reservee: res.reservee === 1,
           }));
           setReservations(formatted);
         }
@@ -79,7 +82,7 @@ const ReservationsSection: React.FC = () => {
     fetchReservations();
   }, []);
 
- // Fonction pour mettre à jour l'annulation ou la confirmation d'une réservation
+ // Fonction pour mettre à jour l'annulation d'une réservation
   const updateAnnulation = async (id: number, newStatus: boolean) => {
     setUpdatingId(id); // active le loader
     try {
@@ -123,6 +126,7 @@ const ReservationsSection: React.FC = () => {
           dateRetour: res.date_retour,
           lieuRetour: res.lieu_retour,
           annulee: res.annulee === 1,
+          reservee: res.reservee === 1,
         }));
 
         setReservations(formatted);
@@ -196,22 +200,29 @@ const ReservationsSection: React.FC = () => {
                 
                     {title === "Demandes confirmées" && (
                       <td className="border-t px-4 py-3">
-                          <div className="flex gap-x-2">
-                            <ActionButton
-                              loading={updatingId === res.id}
-                              onClick={() => handleCancel(res.id)}
-                              text="Annuler"
-                              loadingText="Annulation..."
-                              color="red"
-                            />
-                            <ActionButton
-                              loading={false}
-                              onClick={() => handleNavigate(res.id)}
-                              text="Réserver"
-                              loadingText="Compléter la réservation..."
-                              color="blue"
-                            />
-                          </div>
+                         {!res.reservee ? (
+                            <div className="flex gap-x-2">
+                              <ActionButton
+                                loading={updatingId === res.id}
+                                onClick={() => handleCancel(res.id)}
+                                text="Annuler"
+                                loadingText="Annulation..."
+                                color="red"
+                              />
+                              <ActionButton
+                                loading={false}
+                                onClick={() => handleNavigate(res.id)}
+                                text="Réserver"
+                                loadingText="Compléter la réservation..."
+                                color="blue"
+                              />
+                            </div>
+                          ) : (
+                            <span className="inline-flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-md text-sm font-medium">
+                              <FaCheck className="text-green-600" />
+                                Réservé
+                            </span>
+                          )}
                       </td>
 
                     )}

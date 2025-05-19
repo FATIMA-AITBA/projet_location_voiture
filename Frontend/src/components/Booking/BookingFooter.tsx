@@ -4,10 +4,11 @@ import React from 'react';
 
 type BookingFooterProps = {
   onSubmit: () => void;
+  total: string;
 };
 
 
-const BookingFooter: React.FC<BookingFooterProps>  = ( { onSubmit }) => {
+const BookingFooter: React.FC<BookingFooterProps>  = ( { onSubmit ,total }) => {
   return (
     <div className="w-full bg-gray-100 p-6 space-y-6">
       {/* Total avec prix aligné à droite */}
@@ -16,7 +17,7 @@ const BookingFooter: React.FC<BookingFooterProps>  = ( { onSubmit }) => {
         <input
             id="total-price-footer"
             type="text"
-            value="€ 0.00"
+            value={`${total} MAD`}
             readOnly
             className="text-lg font-bold text-right bg-transparent border-none focus:ring-0"
         />

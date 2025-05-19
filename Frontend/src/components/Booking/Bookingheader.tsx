@@ -1,9 +1,11 @@
 import React from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 
+type BookingHeaderProps = {
+  total: string; // ou string si c’est une chaîne formatée
+};
 
-
-const BookingHeader = () => {
+const BookingHeader : React.FC<BookingHeaderProps>= ( { total }) => {
   return (
     <div className="w-full bg-gray-100 p-6 flex items-center shadow-md font-poppins">
       {/* Bouton retour */}
@@ -22,7 +24,7 @@ const BookingHeader = () => {
         <input
           id="total-price"
           type="text"
-          value="€ 0.00"
+          value={`${total} MAD`}
           readOnly
           className="text-lg font-bold text-right bg-transparent border-none focus:ring-0 text-gray-900"
         />

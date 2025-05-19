@@ -14,7 +14,8 @@ const getReservationsByClient = (clientId) => {
             v.lieu_retrait,
             DATE_FORMAT(r.date_retour, '%Y-%m-%d') AS date_retour,
             v.lieu_retour,
-            r.annulee
+            r.annulee,
+            r.reservee
         FROM 
             reservation r
         JOIN 
@@ -65,7 +66,7 @@ const getAllReservationsWithVoiture = () => {
         v.name AS nom_voiture,
         v.marque AS marque_voiture
       FROM reservation r
-      JOIN voiture v ON r.id_voiture = v.id
+      JOIN voiture v ON r.id_voiture = v.id where r.confirmee = 1
     `;
 
     db.query(sql, (err, results) => {
@@ -75,15 +76,15 @@ const getAllReservationsWithVoiture = () => {
   });
 };
 
-const addReservation = ({ date_depart, date_retour, id_voiture, id_client }) => {
+const addReservation = ({ date_depart, date_retour, id_voiture, id_client, prix_journalier, montantHT,TVA,supp_local,total_frais,montantTTC,kilometrageType }) => {
   return new Promise((resolve, reject) => {
     const sql = `
-      INSERT INTO reservation 
-        (date_depart, date_retour, date_reservation, id_voiture, id_client, confirmee, annulee)
-      VALUES (?, ?, NOW(), ?, ?, 0, 0)
-    `;              
+  INSERT INTO reservation 
+    (date_depart, date_retour, date_reservation, id_voiture, id_client, prix_journalier, montantHT, TVA, supp_local, total_frais, montantTTC, kilometrageType, confirmee, annulee)
+  VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0)
+`;             
 
-    const params = [date_depart, date_retour, id_voiture, id_client];
+    const params = [date_depart, date_retour, id_voiture, id_client,prix_journalier, montantHT, TVA, supp_local, total_frais, montantTTC, kilometrageType];
     console.log("📤 SQL addReservation:", sql.trim(), params);
 
     db.query(sql, params, (err, result) => {
@@ -278,10 +279,21 @@ const getReservationById = (reservationId) => {
       SELECT 
         r.id_reservation,
         r.id_voiture,
+        r.prix_journalier,
+        r.montantHT,
+        r.TVA,
+        r.supp_local,
+        r.total_frais,
+        r.montantTTC,
+        r.kilometrageType,
         v.image,
         v.name,
         v.marque,
         v.carType,
+        v.fuelType,
+        v.typeBoite,
+        v.places,
+        v.nombre_bagages,
         v.lieu_retrait,
         DATE_FORMAT(r.date_depart, '%Y-%m-%d') AS date_depart,
         v.lieu_retour,

@@ -74,10 +74,10 @@ exports.updateAnnulation = async (req, res) => {
 // Ajouter une nouvelle réservation
 exports.createReservation = async (req, res) => {
   const clientId = req.client.id;
-  const { date_depart, date_retour, id_voiture } = req.body;
+  const { date_depart, date_retour, id_voiture ,prix_journalier, montantHT,TVA,supp_local,total_frais, montantTTC,  kilometrageType } = req.body;
 
   // Vérification des données reçues
-  if (!date_depart || !date_retour || !id_voiture) {
+  if (!date_depart || !date_retour || !id_voiture || !prix_journalier || !montantHT || !TVA || !supp_local || !total_frais || !montantTTC || !kilometrageType) {
     return res.status(400).json({ message: 'Données manquantes dans la requête' });
   }
 
@@ -93,6 +93,13 @@ exports.createReservation = async (req, res) => {
       date_retour,
       id_voiture,
       id_client: clientId,
+      prix_journalier,
+      montantHT,
+      TVA,
+      supp_local,
+      total_frais,
+      montantTTC,
+      kilometrageType
     });
 
     res.status(201).json({ message: 'Réservation créée avec succès' });

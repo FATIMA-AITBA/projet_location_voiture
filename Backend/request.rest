@@ -113,7 +113,7 @@ Content-Type: application/json
 ##########
 GET http://localhost:5000/api/reservations/41/reservation
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoiYWJkZWxpbGFoZXJyZXRieUBnbWFpbC5jb20iLCJpYXQiOjE3NDczNDkxOTIsImV4cCI6MTc0NzM0OTQ5Mn0.0N7x1W3Qa6uhyNliA8uiDunrHy-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoiYWJkZWxpbGFoZXJyZXRieUBnbWFpbC5jb20iLCJpYXQiOjE3NDc2NTIyMDUsImV4cCI6MTc0NzY1MjUwNX0.Xfys3OoqIvvNPCva5YIgwL3Kql3Eu30UheSLtH_--RY
 
 
 
@@ -141,3 +141,23 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsI
 GET http://localhost:5000/api/reservations/client/4/confirmer
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoiYWJkZWxpbGFoZXJyZXRieUBnbWFpbC5jb20iLCJpYXQiOjE3NDc0NDE3NTQsImV4cCI6MTc0NzQ0MjA1NH0.wZepzq16I2BrqPA4nvwFESSYpqjAzJ9vWzbKnHXU4Vs
+
+
+
+##########
+Post http://localhost:5000/api/reservations
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoiYWJkZWxpbGFoZXJyZXRieUBnbWFpbC5jb20iLCJpYXQiOjE3NDc2NDc2MzMsImV4cCI6MTc0NzY0NzkzM30.Anw_qc3htaWSMBSQYHsymI3o1mJ5RwEANDRrTWN1TJk
+
+{
+  "date_depart": "2025-05-20",
+  "date_retour": "2025-05-25",
+  "id_voiture": 5,
+  "prix_journalier": 300,
+  "montantHT": 1500,
+  "TVA": 300,
+  "supp_local": 100,
+  "total_frais": 100,
+  "montantTTC": 1900,
+  "kilometrageType": "limité"
+}

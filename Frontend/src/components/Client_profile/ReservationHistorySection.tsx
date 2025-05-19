@@ -1,7 +1,7 @@
 // Importations nécessaires
 import React, { useEffect, useState } from "react";
 import Notification from "./Notification";
-import ActionButton from "./ActionButton";
+
 
 type Reservation = {
   id: number;
@@ -18,7 +18,7 @@ const ReservationsHistoriqueSection: React.FC = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+ 
 
 
   // Fonction pour afficher une notification temporairement
@@ -80,59 +80,7 @@ const ReservationsHistoriqueSection: React.FC = () => {
     fetchReservationsHistorique();
   }, []);
 
-  // Fonction pour supprimer une réservation historique
-  const handleDelete = async (id: number) => {
-    setDeletingId(id); // Mettre à jour l'ID de la réservation en cours de suppression
-    try {
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(`http://localhost:5000/api/reservations-historique/delete-historique/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (data.message === "Token invalide" || data.message === "Token expiré") {
-          showNotification(data.message, "error");
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          window.location.href = "/login_client";
-        } else {
-          showNotification(data.message || "Erreur serveur", "error");
-        }
-        return;
-      }
-
-      // Mise à jour de l'état après suppression
-       if (data.reservationshistoriques) {
-          const formatted: Reservation[] = data.reservationshistoriques.map((res: any) => ({
-            id: res.id_historique,
-            dateReservation: res.date_reservation,
-            vehicule: res.nom_voiture,
-            agence: res.nom_agence,
-            dateDepart: res.date_depart,
-            lieuRetrait: res.lieu_retrait,
-            dateRetour: res.date_retour,
-            lieuRetour: res.lieu_retour,
-          }));
-
-          setReservations(formatted);
-        }
-
-      showNotification(data.message || "Réservation supprimée avec succès", "success");
-
-    } catch (error) {
-      console.error("Erreur lors de la suppression de la réservation :", error);
-      showNotification("Erreur serveur", "error");
-    } finally {
-      setDeletingId(null); //  désactive le loader pour ce bouton
-    }
-  };
+ 
 
   return (
     <section className="my-6 p-6 bg-white shadow-lg rounded-lg">
@@ -163,7 +111,6 @@ const ReservationsHistoriqueSection: React.FC = () => {
                 <th className="text-left px-4 py-2">Lieu de départ</th>
                 <th className="text-left px-4 py-2">Date retour</th>
                 <th className="text-left px-4 py-2">Lieu de retour</th>
-                <th className="text-left px-4 py-2">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -176,17 +123,6 @@ const ReservationsHistoriqueSection: React.FC = () => {
                   <td className="border-t px-4 py-3">{res.lieuRetrait}</td>
                   <td className="border-t px-4 py-3">{res.dateRetour}</td>
                   <td className="border-t px-4 py-3">{res.lieuRetour}</td>
-
-                  <td className="border-t px-4 py-3">
-                    {/*Bouton d'action générique affichant un loader uniquement pour l'élément en cours de traitement (basé sur l'ID) */}
-                    <ActionButton
-                      loading={deletingId === res.id}
-                      onClick={() => handleDelete(res.id)}
-                      text="Supprimer"
-                      loadingText="Suppression..."
-                      color="red"
-                    />
-                  </td>
                 </tr>
               ))}
             </tbody>

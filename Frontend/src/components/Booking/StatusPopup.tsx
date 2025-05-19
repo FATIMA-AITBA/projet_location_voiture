@@ -12,10 +12,8 @@ interface StatusPopupProps {
   formData: any;
   reservationData: any;
   daysDifference: number | null;
-   montantHT: string;
-   montantTTC: string;
-   Typekilometrage: string;
-   TypeAssurance: string;
+  TypeAssurance: string;
+  clientdata : any;
 
 }
 
@@ -26,10 +24,8 @@ const StatusPopup: React.FC<StatusPopupProps> = ({
   formData,
   reservationData,
   daysDifference,
-  montantHT,
-  montantTTC,
-  Typekilometrage,
   TypeAssurance,
+  clientdata,
 }) => {
   const isSuccess = type === 'success';
 
@@ -38,10 +34,8 @@ const StatusPopup: React.FC<StatusPopupProps> = ({
           formData={formData} 
           reservationData={reservationData} 
          daysDifference={daysDifference} 
-          montantHT={montantHT}
-          montantTTC={montantTTC}
-          Typekilometrage={Typekilometrage}
           TypeAssurance={TypeAssurance}
+          clientdata={clientdata}
       />).toBlob();
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
