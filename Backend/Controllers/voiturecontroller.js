@@ -1,28 +1,7 @@
 
-/*const { getAllVoitures } = require('../Models/voituremodel');
-const { getAllReservations } = require('../Models/reservationmodel');
-
-exports.getAllVoituresEtReservations = async (req, res) => {
-  try {
-    const voitures = await getAllVoitures();
-    const reservations = await getAllReservations();
-
-    res.status(200).json({
-      message: 'Récupération réussie',
-      voitures,
-      reservations,
-    });
-  } catch (error) {
-    console.error('Erreur lors de la récupération des données:', error);
-    res.status(500).json({ message: 'Erreur serveur lors de la récupération des voitures et réservations' });
-  }
-};
-*/
-
-
-
 const { getAllVoitures } = require('../Models/voituremodel');
 const { getAllReservationsWithVoiture } = require('../Models/reservationmodel');
+const voitureModel = require('../Models/voituremodel'); 
 
 exports.getAllVoituresEtReservations = async (req, res) => {
   try {
@@ -73,3 +52,52 @@ exports.getAllVoituresEtReservations = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur' });
   }
 };
+
+
+
+
+exports.createCar = async (req, res) => {
+  console.log('Dans createCar, req.client =', req.client);
+  console.log('body=', req.body);
+  try {
+    const id_agence = req.client.id;
+    if (!id_agence) return res.status(403).json({ message: "Authentification requise" });
+
+    // Validation basique
+    const requiredFields = ['name', 'carType', 'marque', 'lieu_retrait', 'lieu_retour'];
+    const missingField = requiredFields.find(field => !req.body[field]);
+    if (missingField) {
+      return res.status(400).json({ message: `Champ manquant: ${missingField}` });
+    }
+
+    const carData = {
+      ...req.body,
+      places: parseInt(req.body.places, 10),
+      nombre_portes: parseInt(req.body.nombre_portes, 10),
+      nombre_bagages: parseInt(req.body.nombre_bagages, 10),
+      prix_par_jour: parseFloat(req.body.prix_par_jour),
+      kilometrage_inclus: parseInt(req.body.kilometrage_inclus, 10),
+      tarif_km_sup: req.body.tarif_km_sup ? parseFloat(req.body.tarif_km_sup) : null,
+      tarif_km_illimites_par_jour: req.body.tarif_km_illimites_par_jour ?
+        parseFloat(req.body.tarif_km_illimites_par_jour) : null,
+      disponible: 1,
+      id_agence
+    };
+
+    const carId = await voitureModel.createCar(carData);
+    res.status(201).json({ 
+      success: true,
+      carId,
+      message: "Voiture publiée avec succès" 
+    });
+
+  } catch (error) {
+    console.error("Erreur création:", error);
+    res.status(500).json({ 
+      success: false,
+      message: "Erreur interne du serveur"
+    });
+  }
+};
+
+
