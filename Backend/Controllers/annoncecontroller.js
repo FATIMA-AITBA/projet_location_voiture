@@ -1,7 +1,7 @@
-const db = require('../Config/db');
+const db = require('../config/db');
 
 const getAnnonces = async (req, res) => {
-  const agenceId = req.user.id; // ID de l'agence connectée
+  const agenceId = req.client.id;
 
   const query = `
     SELECT 
@@ -11,7 +11,7 @@ const getAnnonces = async (req, res) => {
       (
         SELECT COUNT(*) 
         FROM reservation r 
-        WHERE r.voiture_id = v.id AND r.statut = 'en attente'
+        WHERE r.id_voiture = v.id AND r.confirmee = 0
       ) AS reservations_en_attente
     FROM voiture v
     WHERE v.id_agence = ?
@@ -23,21 +23,12 @@ const getAnnonces = async (req, res) => {
       return res.status(500).json({ error: 'Erreur serveur' });
     }
 
-    const annonces = results.map(voiture => {
-      const statut = voiture.disponible === 1 ? 'Active' : 'Inactive';
-      const reservations = voiture.disponible === 1 ? voiture.reservations_en_attente : '-';
-
-      return {
-        id: voiture.id,
-        vehicule: voiture.vehicule,
-        statut: statut,
-        reservationsEnAttente: reservations
-      };
-    });
-
-    
-    console.log('Résultat brut de la base :', results);
-
+    const annonces = results.map(voiture => ({
+      id: voiture.id,
+      name: voiture.vehicule,
+      disponible: voiture.disponible,
+      reservationsEnAttente: voiture.reservations_en_attente
+    }));
 
     res.json(annonces);
   });
