@@ -10,6 +10,7 @@ const reservationRoutes = require('./routes/reservationRoutes');
 const reservationHistoryRoutes = require('./routes/reservationHistoryRoutes'); // Routes pour les réservations
 const voitureRoutes = require('./routes/voitureRoutes'); // Routes pour les voitures
 const factureRoutes = require('./routes/factureRoutes'); // Routes pour les factures
+const annonceRoutes=require('./routes/annonceRoutes')
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/api/reservations-historique', reservationHistoryRoutes); // Route pour
 app.use('/api/voitures', voitureRoutes); // Route pour les voitures
 app.use('/api/factures', factureRoutes); // Route pour les factures
 
+app.use('/api/annonces', annonceRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

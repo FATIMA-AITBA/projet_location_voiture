@@ -1,4 +1,5 @@
-import { FaCarAlt } from "react-icons/fa";
+import { FaCarAlt, FaArrowLeft } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 interface NavbarProps {
   agencyName: string;
@@ -10,7 +11,11 @@ const Navbar: React.FC<NavbarProps> = ({ agencyName, handleSectionClick }) => {
     <nav className="w-full bg-white text-black flex justify-between items-center px-8 py-6 shadow-lg fixed top-4 left-0 z-50">
       
       <div className="flex items-center gap-10">
-      
+        {/* Flèche vers la page d'accueil */}
+        <Link to="/" className="text-black-500 hover:text-blue-700 text-xl">
+          <FaArrowLeft />
+        </Link>
+
         {/* Navigation links */}
         <div className="hidden md:flex gap-8 text-lg font-bold tracking-wide">
           {[
@@ -29,9 +34,7 @@ const Navbar: React.FC<NavbarProps> = ({ agencyName, handleSectionClick }) => {
             </a>
           ))}
         </div>
-       
       </div>
-
 
       {/* Nom de l'agence */}
       <div className="flex items-center gap-2 text-lg font-semibold">
