@@ -66,6 +66,8 @@ export default function AgenceAuthPage() {
 
       const data = await res.json();
       setMessage(data.message);
+
+    
     } catch (error) {
       console.error('Erreur d’inscription', error);
       setMessage('Erreur d’inscription');

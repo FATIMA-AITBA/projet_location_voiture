@@ -193,7 +193,7 @@ const ReservationsSection: React.FC = () => {
 
   return (
     <section className="my-6 p-6 bg-white shadow-lg rounded-lg">
-      <h3 className="mb-6 text-2xl font-semibold text-gray-800">Mes Réservations</h3>
+      <h3 className="mb-6 text-2xl font-semibold text-gray-800">Demandes de Réservation</h3>
       <div className="space-y-8">
         <div>
           <h4 className="mb-2 text-lg font-semibold text-gray-700">En attente</h4>

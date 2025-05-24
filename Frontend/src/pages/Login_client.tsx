@@ -38,7 +38,7 @@ export default function ClientAuthPage() {
         }));
         
         // 🧭 Redirection
-        window.location.href = '/client_profile';
+        window.location.href = '/';
       } else {
         setMessage(data.message || 'Email ou mot de passe incorrect');
       }
