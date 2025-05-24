@@ -8,6 +8,8 @@ import CarOptions from "./CarOptions";
 
 // Définition du type pour les props
 interface Car {
+  nombrePortes: number;
+  nombreBagages: number;
   id: number;
   name: string;
   image: { url: string };
@@ -62,7 +64,7 @@ export default function CarDetails({ car, onBack, differenceEnJours,dateDepart,d
               </div>
               <div className="flex items-center gap-2">
                 <BsSuitcase2Fill className="text-xl" />
-                <span>2 Valise(s)</span>
+                <span>{car.nombreBagages} Valise(s)</span>
               </div>
               <div className="flex items-center gap-2">
                 {car.typeBoite === "automatique" ? (
@@ -74,7 +76,7 @@ export default function CarDetails({ car, onBack, differenceEnJours,dateDepart,d
               </div>
               <div className="flex items-center gap-2">
                 <GiCarDoor className="text-xl" />
-                <span>4 Portes</span>
+                <span>{car.nombrePortes} Portes</span>
               </div>
             </div>
           </div>

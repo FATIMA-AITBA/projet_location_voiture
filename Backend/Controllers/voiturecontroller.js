@@ -14,6 +14,8 @@ exports.getAllVoituresEtReservations = async (req, res) => {
       name: v.name,
       marque: v.marque,
       places: v.places,
+      nombrePortes: v.nombre_portes,
+      nombreBagages: v.nombre_bagages,
       typeBoite: v.typeBoite,
       fuelType: v.fuelType,
       carType: v.carType,

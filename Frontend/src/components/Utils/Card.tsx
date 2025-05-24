@@ -3,7 +3,6 @@ import { GiSteeringWheel } from "react-icons/gi";
 import { GrCheckmark } from "react-icons/gr";
 import { useState, useEffect } from 'react';
 
-// Définition des types pour les props
 interface Car {
   name: string;
   typeBoite: string;
@@ -31,8 +30,11 @@ export default function Card({ car: propCar, onSelect }: CardProps) {
 
   return (
     car && (
-      <div onClick={() => onSelect && onSelect(car)} className='border-4 border-white hover:border-gray-500 rounded-xl p-1'>
-        <div className='relative bg-gradient-to-b from-[#1a1a1a] via-gray-500 to-[#1a1a1a] border shadow-md gap-2 flex flex-col justify-between rounded-xl cursor-pointer text-[#fff] p-5'>
+      <div
+        onClick={() => onSelect && onSelect(car)}
+        className='border-4 border-white hover:border-gray-500 rounded-xl p-1'
+      >
+        <div className='relative bg-gradient-to-b from-[#1a1a1a] via-gray-500 to-[#1a1a1a] border shadow-md gap-2 flex flex-col justify-between rounded-xl cursor-pointer text-[#fff] p-5 h-[400px] overflow-hidden'>
           <h2 className="font-bold text-[20px]">{car.name}</h2>
           <p className="absolute top-0 right-2 flex items-center gap-1 my-3 p-2 rounded-md font-bold text-[10px] bg-blue-600">
             <GiSteeringWheel className="text-[20px]" />
@@ -53,12 +55,21 @@ export default function Card({ car: propCar, onSelect }: CardProps) {
               <span>{car.marque}</span>
             </p>
           </div>
-          <img src={car.image.url} alt={car.name} height={150} width={260} className="w-full h-full object-cover self-center" />
+
+          <img
+            src={car.image.url}
+            alt={car.name}
+            height={160}
+            width={260}
+            className="w-full max-h-[160px] object-cover self-center"
+          />
+
           <p className="text-[12px] flex items-center gap-1">
             <GrCheckmark className="text-[12px] text-green-500" /> Kilométrage inclus {car.kilometrageInclus} km
           </p>
 
-          <p><span className="font-bold text-[26px]">{car.prixParJour} MAD</span>
+          <p>
+            <span className="font-bold text-[26px]">{car.prixParJour} MAD</span>
             <span className="text-[12px]">/ par jour</span>
           </p>
         </div>
