@@ -113,7 +113,7 @@ Content-Type: application/json
 ##########
 GET http://localhost:5000/api/reservations/41/reservation
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoiYWJkZWxpbGFoZXJyZXRieUBnbWFpbC5jb20iLCJpYXQiOjE3NDc2NTIyMDUsImV4cCI6MTc0NzY1MjUwNX0.Xfys3OoqIvvNPCva5YIgwL3Kql3Eu30UheSLtH_--RY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImVtYWlsIjoiYWJkZWxpbGFoZXJyZXRieUBnbWFpbC5jb20iLCJpYXQiOjE3NDgwOTc2ODIsImV4cCI6MTc0ODA5Nzk4Mn0.Oh1ESSPhLe20UklH1ZGlZTnVhX_ChKjB82xn9OrOOWs
 
 
 

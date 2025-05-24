@@ -202,7 +202,7 @@ const BookingForm = () => {
           <div className="sticky top-6">
             {reservationData && (
               <BookingCar
-                image={`/images/${reservationData.image}`}
+                image={`/uploads/${reservationData.image}`}
                 name={reservationData.name}
                 subtitle={`${reservationData.marque} | ${reservationData.carType}`}
                 days={daysDifference || 0}
