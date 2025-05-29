@@ -138,10 +138,10 @@ export default function Form({
       onClick={handleOverlayClick}
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-30 flex items-start justify-center z-50"
     >
-      <div className="bg-white mt-10 p-6 rounded-xl shadow-lg w-full max-w-md lg:max-w-2xl mx-auto relative">
+      <div className="bg-white mt-10 p-3 rounded-xl shadow-lg w-full max-w-md lg:max-w-md mx-auto relative">
         <div className="bg-white rounded-lg p-3">
           {/* Top Buttons */}
-          <div className="flex flex-wrap items-center gap-4 mb-4 justify-center">
+          {/*<div className="flex flex-wrap items-center gap-4 mb-4 justify-center">
             <button className="text-white rounded-full flex items-center gap-2 p-2 px-3 bg-[#1a1a1a]">
               <FaCar />
               <p>Véhicules</p>
@@ -150,7 +150,7 @@ export default function Form({
               <FaTruck />
               <p>Utilitaires</p>
             </button>
-          </div>
+          </div>*/}
 
           {/* Lieux */}
           <div className="flex flex-col gap-4 mb-4">
@@ -236,7 +236,7 @@ export default function Form({
                   handleOverlayClick(e as unknown as MouseEvent<HTMLDivElement>);
                 }
               }}
-              className="block w-full bg-blue-600 hover:bg-blue-700 text-white p-4 px-2 rounded-md font-bold"
+              className="block w-full bg-blue-600 hover:bg-blue-700 text-white p-3 px-2 rounded-md font-bold"
             >
               Voir les véhicules
             </button>

@@ -29,7 +29,7 @@ exports.getAllVoituresEtReservations = async (req, res) => {
       updatedAt: new Date().toISOString(),
       publishedAt: new Date().toISOString(),
       image: {
-        url: `/uploads/${v.image}`,
+        url: `http://localhost:5000/uploads/${v.image}`,
       },
     }));
 
@@ -59,47 +59,30 @@ exports.getAllVoituresEtReservations = async (req, res) => {
 
 
 exports.createCar = async (req, res) => {
-  console.log('Dans createCar, req.client =', req.client);
-  console.log('body=', req.body);
   try {
-    const id_agence = req.client.id;
+    const id_agence = req.client?.id;
     if (!id_agence) return res.status(403).json({ message: "Authentification requise" });
 
-    // Validation basique
-    const requiredFields = ['name', 'carType', 'marque', 'lieu_retrait', 'lieu_retour'];
-    const missingField = requiredFields.find(field => !req.body[field]);
-    if (missingField) {
-      return res.status(400).json({ message: `Champ manquant: ${missingField}` });
-    }
+    const imagePath = req.file ? req.file.filename : null;
 
     const carData = {
       ...req.body,
+      image: imagePath, // stocker le chemin de l'image
       places: parseInt(req.body.places, 10),
       nombre_portes: parseInt(req.body.nombre_portes, 10),
       nombre_bagages: parseInt(req.body.nombre_bagages, 10),
       prix_par_jour: parseFloat(req.body.prix_par_jour),
       kilometrage_inclus: parseInt(req.body.kilometrage_inclus, 10),
       tarif_km_sup: req.body.tarif_km_sup ? parseFloat(req.body.tarif_km_sup) : null,
-      tarif_km_illimites_par_jour: req.body.tarif_km_illimites_par_jour ?
-        parseFloat(req.body.tarif_km_illimites_par_jour) : null,
+      tarif_km_illimites_par_jour: req.body.tarif_km_illimites_par_jour ? parseFloat(req.body.tarif_km_illimites_par_jour) : null,
       disponible: 1,
       id_agence
     };
 
     const carId = await voitureModel.createCar(carData);
-    res.status(201).json({ 
-      success: true,
-      carId,
-      message: "Voiture publiée avec succès" 
-    });
-
+    res.status(201).json({ success: true, carId, message: "Voiture publiée avec succès" });
   } catch (error) {
     console.error("Erreur création:", error);
-    res.status(500).json({ 
-      success: false,
-      message: "Erreur interne du serveur"
-    });
+    res.status(500).json({ success: false, message: "Erreur interne du serveur" });
   }
 };
-
-

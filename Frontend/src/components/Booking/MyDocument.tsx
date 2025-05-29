@@ -177,7 +177,7 @@ const MyDocument: React.FC<MyDocumentProps> = ({
               <Text style={stylesPdf.row}><Text style={stylesPdf.label}>nombre de jours de location :</Text> {daysDifference ?? 'N/A'} jours</Text>
             </View>
             {reservationData.image && (
-              <Image src={`/uploads/${reservationData.image}`} style={stylesPdf.carImage} />
+              <Image src={`http://localhost:5000/uploads/${reservationData.image}`} style={stylesPdf.carImage} />
             )}
           </View>
         </View>

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import {FaUser, FaCalendarCheck, FaHistory } from "react-icons/fa";
+import {FaUser, FaCalendarCheck, FaHistory ,  FaArrowLeft } from "react-icons/fa";
 import { IoMdMenu } from "react-icons/io";
 import { MdClose } from "react-icons/md";  // Importer MdClose
-import Deconnexion from "./Deconnexion"; 
+import Deconnexion from "./Deconnexion";
+import { Link } from "react-router-dom";
+
 
 interface NavbarProps {
   clientName: string;
@@ -37,6 +39,17 @@ const Navbar: React.FC<NavbarProps> = ({ clientName, handleSectionClick }) => {
   return (
     <nav className="w-full bg-white text-black flex justify-between items-center px-8 py-6 shadow-lg fixed top-4 left-0 z-50">
       <div className="flex items-center gap-10">
+
+         {/* Bouton vers l'accueil */}
+        <Link
+          to="/"
+          className="text-black hover:text-blue-700 text-2xl md:text-xl"
+          aria-label="Accueil"
+        >
+          <FaArrowLeft />
+        </Link>
+
+
         {/* Menu icon (mobile) */}
         <button
           className="md:hidden text-3xl text-blue-500"

@@ -47,7 +47,7 @@ const StatusPopup: React.FC<StatusPopupProps> = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div className="bg-white rounded-2xl shadow-2xl w-[90%] max-w-2xl h-auto min-h-[500px] p-10 text-center relative flex flex-col items-center justify-center">
+      <div className="bg-white rounded-2xl shadow-2xl w-[80%] max-w-md h-auto min-h-[100px] p-3 text-center relative flex flex-col items-center justify-center">
         <div
           className={`flex items-center justify-center w-20 h-20 rounded-full ${
             isSuccess ? 'bg-green-100' : 'bg-red-100'

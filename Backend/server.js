@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
+
 
 dotenv.config();
 
@@ -22,6 +24,11 @@ app.use(express.json());
 
 
 
+//  Sert les fichiers statiques dans le dossier "uploads"
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
+
 // Utilisation des routes pour clients et agences
 app.use('/api/clients', clientRoutes); // Route pour les clients
 app.use('/api/agences', agenceRoutes); // Route pour les agences
@@ -36,3 +43,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
 });
+

@@ -19,8 +19,8 @@ const createCar = (carData) => {
       INSERT INTO voiture 
       (name, carType, marque, places, nombre_portes, nombre_bagages, 
        typeBoite, fuelType, lieu_retrait, lieu_retour, prix_par_jour, 
-       kilometrage_inclus, tarif_km_sup, tarif_km_illimites_par_jour, disponible, id_agence)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       kilometrage_inclus, tarif_km_sup, tarif_km_illimites_par_jour, disponible, id_agence, image)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
@@ -39,7 +39,8 @@ const createCar = (carData) => {
       carData.tarif_km_sup,
       carData.tarif_km_illimites_par_jour,
       carData.disponible || 1, // Valeur par défaut 1 si non fourni
-      carData.id_agence
+      carData.id_agence,
+      carData.image 
     ];
 
     db.query(sql, values, (err, result) => {
