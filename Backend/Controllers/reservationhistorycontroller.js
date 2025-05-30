@@ -1,4 +1,4 @@
-const { getReservationsHistoryByClient } = require('../Models/reservationhistorymodel');
+const { getReservationsHistoryByClient,getReservationsHistoryByAgence } = require('../Models/reservationhistorymodel');
 
 // Récupérer les réservations historiques d'un client
 exports.getClientReservationsHistory = async (req, res) => {
@@ -23,6 +23,25 @@ exports.getClientReservationsHistory = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur', error });
   }
 };
+
+
+exports.getAgenceReservationsHistory = async (req, res) => {
+  // on récupère l'ID agence dans l’URL ou dans le token
+  const agenceId = parseInt(req.params.id, 10) || req.client.id;
+  try {
+    await new Promise(r => setTimeout(r, 1000));
+    const reservationshistoriques = await getReservationsHistoryByAgence(agenceId);
+    res.status(200).json({
+      message: 'Historique agence chargé',
+      data: reservationshistoriques
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erreur serveur', error });
+  }
+};
+
+
 
 
 

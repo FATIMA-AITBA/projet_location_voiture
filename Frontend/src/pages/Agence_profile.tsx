@@ -6,6 +6,7 @@ import ProfileSection from '../components/Agence_profile/ProfileSection';
 import AnnoncesSection from '../components/Agence_profile/AnnoncesSection';
 import ReservationsSection from '../components/Agence_profile/ReservationsSection';
 import StatistiquesSection from '../components/Agence_profile/StatistiquesSection';
+import HistoriqueReservations from "../components/Agence_profile/HistoriqueSection";
 
 export default function AgenceProfile() {
   const [activeSection, setActiveSection] = useState<string>("profile");
@@ -48,6 +49,7 @@ export default function AgenceProfile() {
         {activeSection === "profile" && <ProfileSection agency={agencyData} />}
         {activeSection === "annonces" && <AnnoncesSection />}
         {activeSection === "reservations" && <ReservationsSection />}
+        {activeSection === "historiquereservations" && <HistoriqueReservations />}
         {activeSection === "statistiques" && <StatistiquesSection />}
       </div>
     </div>

@@ -22,6 +22,7 @@ const Navbar: React.FC<NavbarProps> = ({ agencyName, handleSectionClick }) => {
             { label: "Profil", value: "profile" },
             { label: "Annonces", value: "annonces" },
             { label: "Réservations", value: "reservations" },
+            { label: "Historique Réservations", value: "historiquereservations" },
             { label: "Statistiques", value: "statistiques" },
           ].map((link) => (
             <a
