@@ -31,8 +31,17 @@ export default function Form({
   setCarList,
   reservationList,
 }: FormProps) {
-  const [lieuRetraitList, setLieuRetraitList] = useState<string[]>([]);
-  const [lieuRetourList, setLieuRetourList] = useState<string[]>([]);
+  const villes = [ "Marrakech", "Kenitra","Rabat",  "Tanger","Casablanca","Agadir","Oujda",];
+  /*const [lieuRetraitList, setLieuRetraitList] = useState<string[]>([]);
+  const [lieuRetourList, setLieuRetourList] = useState<string[]>([]);*/
+  const [lieuRetraitList] = useState<string[]>([
+  "Lieu de retrait et retour",
+  ...villes,
+  ]);
+const [lieuRetourList] = useState<string[]>([
+  "Lieu de retour différent",
+  ...villes,
+ ]);
   const [selectedLieuRetrait, setSelectedLieuRetrait] = useState<string>("");
   const [showSecondSelect, setShowSecondSelect] = useState<boolean>(false);
   const [selectedLieuRetour, setSelectedLieuRetour] = useState<string>("");
@@ -47,10 +56,11 @@ export default function Form({
     dateRetour: "",
   });
 
+  const navigate = useNavigate();
+
+  /*
   const lieuRetraitSet = new Set<string>();
   const lieuRetourSet = new Set<string>();
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (carFilter) {
@@ -65,7 +75,7 @@ export default function Form({
     });
     setLieuRetraitList(["Lieu de retrait et retour", ...Array.from(lieuRetraitSet)]);
     setLieuRetourList(["Lieu de retour différent", ...Array.from(lieuRetourSet)]);
-  };
+  };*/
 
   const handleNavigation = () => {
     const newErrors: ErrorState = {

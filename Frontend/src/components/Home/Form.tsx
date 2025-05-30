@@ -22,8 +22,18 @@ export default function Form({
   setCarList,
   reservationList,
 }: FormProps) {
-  const [lieuRetraitList, setLieuRetraitList] = useState<string[]>([]);
-  const [lieuRetourList, setLieuRetourList] = useState<string[]>([]);
+  const villes = [ "Marrakech", "Kenitra","Rabat",  "Tanger","Casablanca","Agadir","Oujda",];
+  /*const [lieuRetraitList, setLieuRetraitList] = useState<string[]>([]);
+  const [lieuRetourList, setLieuRetourList] = useState<string[]>([]);*/
+  const [lieuRetraitList] = useState<string[]>([
+  "Lieu de retrait et retour",
+  ...villes,
+  ]);
+const [lieuRetourList] = useState<string[]>([
+  "Lieu de retour différent",
+  ...villes,
+ ]);
+
   const [selectedLieuRetrait, setSelectedLieuRetrait] = useState<string>("");
   const [showSecondSelect, setShowSecondSelect] = useState<boolean>(false);
   const [selectedLieuRetour, setSelectedLieuRetour] = useState<string>("");
@@ -43,10 +53,11 @@ export default function Form({
     dateRetour: "",
   });
 
-  const lieuRetraitSet = new Set<string>();
+ const navigate = useNavigate()
+
+  /*const lieuRetraitSet = new Set<string>();
   const lieuRetourSet = new Set<string>();
 
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (carFilter) {
@@ -69,6 +80,7 @@ export default function Form({
       ...Array.from(lieuRetourSet),
     ]);
   };
+  */
 
   const handleNavigation = () => {
     const newErrors = {
@@ -136,7 +148,7 @@ export default function Form({
   return (
     <div className="bg-white rounded-lg p-3 sm:p-4 mt-4">
       {/* Top Buttons */}
-      <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 mb-4 justify-center sm:justify-start">
+      {/*<div className="flex flex-wrap sm:flex-nowrap items-center gap-4 mb-4 justify-center sm:justify-start">
         <button className="text-white rounded-full flex items-center gap-2 p-2 px-3 bg-[#1a1a1a]">
           <FaCar />
           <p>Véhicules</p>
@@ -145,7 +157,7 @@ export default function Form({
           <FaTruck />
           <p>Utilitaires</p>
         </button>
-      </div>
+      </div>*/}
 
       {/* Grid Structure */}
       <div className="grid grid-cols-1 lg:grid-cols-2 lg:place-items-center gap-4 lg:gap-0">
