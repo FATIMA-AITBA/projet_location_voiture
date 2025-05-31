@@ -36,11 +36,12 @@ const AddCarForm: React.FC = () => {
     }
   };
 
-  const marques = [
-    'Audi','Mercedes','Dacia','Peugeot','Renault','Toyota','VW','BMW','Fiat',
-    'Ford','Jeep','Honda','Nissan','Mazda','Hyundai','Kia','Volvo','Cadillac',
-    'Mitsubishi','Jaguar'
-  ];
+  const marques = [ 
+  'Audi','Mercedes','Dacia','Peugeot','Renault','Toyota','VW','BMW','Fiat',
+  'Ford','Jeep','Honda','Nissan','Mazda','Hyundai','Kia','Volvo','Cadillac',
+  'Mitsubishi','Jaguar'
+ ];
+
   const villes = ['Marrakech','Kenitra','Rabat','Tanger','Casablanca','Agadir','Oujda'];
 
   return (
@@ -93,7 +94,7 @@ const AddCarForm: React.FC = () => {
               disabled={submitting}
             >
               <option value="">Sélectionner un type</option>
-              {['Berline','SUV','Citadine','Familiale','Utilitaire','Cabriolet','Coupe','Break','Monospace'].map(type => (
+              {['Berline', 'SUV', 'Coupe', 'Cabriolet', 'Minivan', 'Break', 'Citadine', 'Véhicule de luxe', 'Utilitaire', 'Familiale'].map(type => (
                 <option key={type} value={type}>{type}</option>
               ))}
             </select>
@@ -154,11 +155,11 @@ const AddCarForm: React.FC = () => {
             </div>
             <div>
               <label className="block text-gray-700 font-medium mb-2">Type de carburant <span className="text-red-500">*</span></label>
-              <select name="fuelType" defaultValue="essence" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required disabled={submitting}>
-                <option>essence</option>
-                <option>diesel</option>
-                <option>electrique</option>
-                <option>hybride</option>
+              <select name="fuelType" defaultValue="Essence" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required disabled={submitting}>
+                <option>Essence</option>
+                <option>Diesel</option>
+                <option>Electrique</option>
+                <option>Hybride</option>
               </select>
             </div>
           </div>

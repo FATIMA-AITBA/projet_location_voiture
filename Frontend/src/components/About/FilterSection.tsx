@@ -13,7 +13,7 @@ import {
 } from "react-icons/tb";
 import {
   SiAudi, SiMercedes, SiPeugeot, SiRenault, SiToyota,
-  SiVolkswagen, SiBmw, SiFiat, SiFord, SiJeep, SiHonda,SiNissan, SiMazda, SiHyundai, SiKia,SiVolvo,SiCadillac,SiMitsubishi,SiJaguar
+  SiVolkswagen, SiBmw, SiFiat, SiFord, SiJeep, SiHonda,SiNissan, SiMazda, SiHyundai, SiKia,SiVolvo,SiCadillac,SiMitsubishi,SiJaguar,SiDacia
 } from "react-icons/si";
 import { IoDiamondOutline } from "react-icons/io5";
 import cn from "classnames";
@@ -59,22 +59,27 @@ export default function FilterSection({
 }: FilterSectionProps) {
   const [selectedBrand, setSelectedBrand] = useState<string[]>([]);
   const [priceOrder, setPriceOrder] = useState<number | null>(null);
-  const [brandList, setBrandList] = useState<string[]>([]);
+  /*const [brandList, setBrandList] = useState<string[]>([]);*/
+  const brandList: string[] = [
+  'Audi', 'Mercedes', 'Dacia', 'Peugeot', 'Renault', 'Toyota', 'VW', 'BMW',
+  'Fiat', 'Ford', 'Jeep', 'Honda', 'Nissan', 'Mazda', 'Hyundai', 'Kia',
+  'Volvo', 'Cadillac', 'Mitsubishi', 'Jaguar'
+];
   const [selectedFuel, setSelectedFuel] = useState<string[]>([]);
   /*const [fuelList, setFuelList] = useState<string[]>([]);*/
- const fuelList: string[] = ['essence', 'diesel', 'electrique', 'hybride'];
+ const fuelList: string[] = ['Essence', 'Diesel', 'Electrique', 'Hybride'];
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenFuel, setIsOpenFuel] = useState(false);
   const [isOpenCar, setIsOpenCar] = useState(false);
   const [selectedTypeBoite, setSelectedTypeBoite] = useState<string[]>([]);
   /*const [typeBoiteList, setTypeBoiteList] = useState<string[]>([]);*/
-  const typeBoiteList: string[] = ['automatique', 'manuel'];
+  const typeBoiteList: string[] = ['Automatique', 'Manuelle'];
   const [selectedTypeCar, setSelectedTypeCar] = useState<string[]>([]);
   /*const [typeCarList, setTypeCarList] = useState<string[]>([]);*/
-  const typeCarList: string[] = ["berline", "suv", "coupe", "cabriolet", "minivan", "break", "Véhicule de luxe","Véhicule utilitaire","voiture familiale"];
+  const typeCarList: string[] = ["Berline", "SUV", "Coupe", "Cabriolet", "Minivan", "Break","Citadine", "Véhicule de luxe","Utilitaire","Familiale"];
   const [selectedPlaces, setSelectedPlaces] = useState<number | null>(null);
 
-  const BrandSet = new Set<string>();
+  /*const BrandSet = new Set<string>();*/
   /*const FuelSet = new Set<string>();*/
   /*const TypeBoiteSet = new Set<string>();*/
   /*const TypeCarSet = new Set<string>();*/
@@ -83,52 +88,53 @@ export default function FilterSection({
 
   const iconMap: Record<string, JSX.Element> = {
     //tpye de carburant
-    essence: <FaGasPump size={24} />,
-    diesel: <BsFillFuelPumpDieselFill size={24} />,
-    electrique: <MdElectricCar size={24} />,
-    hybride: <FaCarSide size={24} />,
+    Essence: <FaGasPump size={24} />,
+    Diesel: <BsFillFuelPumpDieselFill size={24} />,
+    Electrique: <MdElectricCar size={24} />,
+    Hybride: <FaCarSide size={24} />,
     //type de boite
-    automatique: <TbSquareLetterAFilled size={24} />,
-    manuel: <TbManualGearboxFilled size={24} />,
+    Automatique: <TbSquareLetterAFilled size={24} />,
+    Manuelle: <TbManualGearboxFilled size={24} />,
     // marque(brand) de voiture
-    audi: <SiAudi size={58} />,
-    mercedes: <SiMercedes size={58} />,
-    peugeot: <SiPeugeot size={58} />,
-    renault: <SiRenault size={58} />,
-    toyota: <SiToyota size={58} />,
-    vw: <SiVolkswagen size={58} />,
-    bmw: <SiBmw size={58} />,
-    fiat: <SiFiat size={58} />,
-    ford: <SiFord size={58} />,
-    jeep: <SiJeep size={58} />,
-    honda: <SiHonda size={58} />,
-    nissan: <SiNissan size={58} />,
-    mazda: <SiMazda size={58} />,
-    hyundai: <SiHyundai size={58} />,
-    kia: <SiKia size={58} />,
-    volvo: <SiVolvo size={58} />,
-    cadillac: <SiCadillac size={58} />,
-    mitsubishi: <SiMitsubishi size={58} />,
-    jaguar: <SiJaguar size={58} />,
+    Audi: <SiAudi size={58} />,
+    Mercedes: <SiMercedes size={58} />,
+    Dacia: <SiDacia size={58} />, // Fallback icon for Dacia
+    Peugeot: <SiPeugeot size={58} />,
+    Renault: <SiRenault size={58} />,
+    Toyota: <SiToyota size={58} />,
+    VW: <SiVolkswagen size={58} />,
+    BMW: <SiBmw size={58} />,
+    Fiat: <SiFiat size={58} />,
+    Ford: <SiFord size={58} />,
+    Jeep: <SiJeep size={58} />,
+    Honda: <SiHonda size={58} />,
+    Nissan: <SiNissan size={58} />,
+    Mazda: <SiMazda size={58} />,
+    Hyundai: <SiHyundai size={58} />,
+    Kia: <SiKia size={58} />,
+    Volvo: <SiVolvo size={58} />,
+    Cadillac: <SiCadillac size={58} />,
+    Mitsubishi: <SiMitsubishi size={58} />,
+    Jaguar: <SiJaguar size={58} />,
     
     //type de voiture
-    berline: <FaCarSide size={24} />,
-    suv: <TbCarSuvFilled size={24} />,
-    coupe: <FaCarAlt size={24} />,
-    cabriolet: <FaCar size={24} />,
-    minivan: <FaShuttleVan size={24} />,
+    Berline: <FaCarSide size={24} />,
+    SUV: <TbCarSuvFilled size={24} />,
+    Coupe: <FaCarAlt size={24} />,
+    Cabriolet: <FaCar size={24} />,
+    Minivan: <FaShuttleVan size={24} />,
     break: <FaShuttleVan size={24} />,
-    "Véhicule utilitaire": <FaTruck size={24} />,
+    "Utilitaire": <FaTruck size={24} />,
     "Véhicule de luxe": <IoDiamondOutline size={24} />,
     
   };
 
   
-  useEffect(() => {
+  /*useEffect(() => {
     if (carFilter) {
       handlerFilter();
     }
-  }, [carFilter]);
+  }, [carFilter]);*/
 
   useEffect(() => {
     if (lieuRetrait) {
@@ -141,19 +147,19 @@ export default function FilterSection({
   }, [lieuRetrait, lieuRetour, dateDepart, dateRetour]);
   
 
-  const handlerFilter = () => {
+  /*const handlerFilter = () => {
     carFilter.forEach((element: any) => {
       BrandSet.add(element.marque);
-      /*FuelSet.add(element.fuelType);*/
-      /*TypeBoiteSet.add(element.typeBoite);*/
-      /*TypeCarSet.add(element.carType);*/
+      FuelSet.add(element.fuelType);
+      TypeBoiteSet.add(element.typeBoite);
+      TypeCarSet.add(element.carType);
     });
   
     setBrandList(Array.from(BrandSet));
-    /*setFuelList(Array.from(FuelSet));*/
-    /*setTypeBoiteList(Array.from(TypeBoiteSet));*/
-    /*setTypeCarList(Array.from(TypeCarSet));*/
-  };
+    setFuelList(Array.from(FuelSet));
+    setTypeBoiteList(Array.from(TypeBoiteSet));
+    setTypeCarList(Array.from(TypeCarSet));
+  };*/
   
 
   
@@ -524,12 +530,12 @@ const filterDate = (dateDepart: string, dateRetour: string) => {
 
 
     {/* Liste des marques */}
-<div className="grid grid-cols-4 gap-4 sm:grid-cols-6 md:grid-cols-8 lg:flex lg:flex-row lg:justify-center lg:gap-6 p-4 rounded-lg">
+<div className="grid grid-cols-4 gap-4 sm:grid-cols-6 md:grid-cols-8 lg:flex lg:flex-row lg:justify-center lg:gap-3 p-4 rounded-lg">
   {brandList
     .filter((item: string) => item !== "Toutes")
     .map((item: string, index: number) => {
       const isSelected = selectedBrand.includes(item);
-      const icon = iconMap[item.toLowerCase()]; // on récupère l’icône correspondante
+      const icon = iconMap[item]; // on récupère l’icône correspondante
 
       return (
         <div key={index} className="flex flex-col items-center">
