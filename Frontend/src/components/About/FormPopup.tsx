@@ -148,7 +148,7 @@ const [lieuRetourList] = useState<string[]>([
       onClick={handleOverlayClick}
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-30 flex items-start justify-center z-50"
     >
-      <div className="bg-white mt-10 p-3 rounded-xl shadow-lg w-full max-w-md lg:max-w-md mx-auto relative">
+      <div className="bg-white mt-10 p-1 rounded-xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-md mx-auto relative">
         <div className="bg-white rounded-lg p-3">
           {/* Top Buttons */}
           {/*<div className="flex flex-wrap items-center gap-4 mb-4 justify-center">

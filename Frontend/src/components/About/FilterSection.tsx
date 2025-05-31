@@ -363,10 +363,10 @@ const filterDate = (dateDepart: string, dateRetour: string) => {
 
   return (
     <div className="bg-slate-900">
-      <div className="flex flex-row justify-center gap-16 p-4">
+      <div className="flex flex-col sm:flex-row sm:justify-center gap-4 sm:gap-8 md:gap-12 lg:gap-16 p-4">
 
         {/* Menu déroulant pour sélectionner l ordre du  prix */}
-        <select onChange={(e) => filterPrice(e.target.value)} className="select select-bordered w-1/6 h-14">
+        <select onChange={(e) => filterPrice(e.target.value)} className="select select-bordered  w-full sm:w-1/3 md:w-1/5 lg:w-1/6 h-14">
             <option disabled selected>
             Trier par prix
             </option >
@@ -376,7 +376,7 @@ const filterDate = (dateDepart: string, dateRetour: string) => {
         </select>
 
         {/* Menu déroulant pour sélectionner le nombre de places */}
-        <select onChange={(e) => filterPlaces(Number(e.target.value))} className="select select-bordered w-1/6 h-14">
+        <select onChange={(e) => filterPlaces(Number(e.target.value))} className="select select-bordered w-full sm:w-1/3 md:w-1/5 lg:w-1/6 h-14">
           <option disabled selected>
             Nombre de places
           </option>
@@ -390,7 +390,7 @@ const filterDate = (dateDepart: string, dateRetour: string) => {
 
        
       {/* Menu déroulant pour sélectionner le type de boite */}
-        <div className="w-1/6 h-14">
+        <div className="w-full sm:w-1/3 md:w-1/5 lg:w-1/6 h-14">
         <div className="relative w-full h-full">
             <button
             className="w-full h-full flex justify-between px-4 py-2 text-sm font-medium text-black bg-white rounded-lg shadow hover:opacity-90 focus:outline-none"
@@ -433,7 +433,7 @@ const filterDate = (dateDepart: string, dateRetour: string) => {
         </div>
 
          {/* Menu déroulant pour sélectionner le type de voiture */}
-        <div className="w-1/6 h-14">
+        <div className="w-full sm:w-1/3 md:w-1/5 lg:w-1/6 h-14">
         <div className="relative w-full h-full">
             <button
             className="w-full h-full flex justify-between px-4 py-2 text-sm font-medium text-black bg-white rounded-lg shadow hover:opacity-90 focus:outline-none"
@@ -477,7 +477,7 @@ const filterDate = (dateDepart: string, dateRetour: string) => {
 
 
         {/* Menu déroulant pour sélectionner le carburant */}
-    <div className="w-1/6 h-14">
+    <div className="w-full sm:w-1/3 md:w-1/5 lg:w-1/6 h-14">
     <div className="relative w-full h-full">
         <button
         className="w-full h-full flex justify-between px-4 py-2 text-sm font-medium text-black bg-white rounded-lg shadow hover:opacity-90 focus:outline-none"
@@ -524,7 +524,7 @@ const filterDate = (dateDepart: string, dateRetour: string) => {
 
 
     {/* Liste des marques */}
-<div className="flex justify-center gap-4 p-4 rounded-lg">
+<div className="grid grid-cols-4 gap-4 sm:grid-cols-6 md:grid-cols-8 lg:flex lg:flex-row lg:justify-center lg:gap-6 p-4 rounded-lg">
   {brandList
     .filter((item: string) => item !== "Toutes")
     .map((item: string, index: number) => {
