@@ -228,7 +228,11 @@ const CarOptions: React.FC<CarOptionsProps> = ({
         <div className="text-lg font-semibold">
           <span>{selectedValue} MAD</span>
           <span className="text-sm text-gray-500"> / jour</span>
-          <div className="text-sm text-gray-600">{calculateTotal()} MAD total</div>
+        {!isNaN(calculateTotal()) && (
+          <div className="text-sm text-gray-600">
+           {calculateTotal()} MAD total
+          </div>
+        )}
         </div>
         <button
           onClick={handleNavigation}
@@ -238,16 +242,18 @@ const CarOptions: React.FC<CarOptionsProps> = ({
         </button>
       </div>
 
-      <div
-        className="text-sm text-blue-600 mt-2 cursor-pointer hover:underline"
-        onClick={toggleDetailPrix}
-      >
-        Détails du prix
-      </div>
+      {!isNaN(calculateTotal()) && (
+        <div
+          className="text-sm text-blue-600 mt-2 cursor-pointer hover:underline"
+          onClick={toggleDetailPrix}
+        >
+          Détails du prix
+        </div>
+      )}
 
       {/* Popups */}
       {showPopup && <InfoPopup onClose={closePopup} />}
-      {showDetailPrix && (
+      {showDetailPrix && !isNaN(calculateTotal()) && (
         <DetailPrixPopup
           onClose={closeDetailPrix}
           differenceEnJours={differenceEnJours}
