@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from 'react-toastify';
 
 interface Reservation {
   id_reservation: number;
@@ -102,14 +103,15 @@ const ReservationsSection: React.FC = () => {
       throw new Error(errorData.message || "Échec de l'opération");
     }
 
-    // Rafraîchir les données
+    const data = await response.json();
+    toast.success(`${data.message}`);
     await fetchReservations();
-    alert(await response.json().then(data => data.message));
 
   } catch (error: any) {
-    alert("Erreur : " + error.message);
+    toast.error(` Erreur : ${error.message}`);
   }
 };
+
 
   const renderTable = (reservations: Reservation[], type: 'attente' | 'confirmees') => (
     <div className="overflow-x-auto mb-8">

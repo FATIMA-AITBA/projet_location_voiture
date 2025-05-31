@@ -4,6 +4,7 @@ import InfoPopup from "./infoPopup";
 import DetailPrixPopup from "./DetailPrixPopup";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 // Types des props
 interface Car {
@@ -114,35 +115,37 @@ const CarOptions: React.FC<CarOptionsProps> = ({
       };
 
       try {
-        await axios.post("http://localhost:5000/api/reservations", dataToSend, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+  await axios.post("http://localhost:5000/api/reservations", dataToSend, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
-        alert("Votre demande de réservation est enregistrée");
-        // Si tu veux naviguer après la réservation, décommente ce bloc :
-        /*
-        navigate("/booking_page", {
-          state: {
-            total: montantTTC,
-            car,
-            differenceEnJours,
-            dateDepart,
-            dateRetour,
-            kilometrageType,
-          },
-        });
-        */
-      } catch (error) {
-        console.error("Erreur lors de la réservation :", error);
-        alert("Erreur lors de la création de la réservation");
-      }
-    } else {
-      alert("Connectez-vous d'abord");
-      // navigate("/login");
-    }
+  toast.success("Votre demande de réservation est enregistrée");
+
+  // Si tu veux naviguer après la réservation, décommente ce bloc :
+  /*
+  navigate("/booking_page", {
+    state: {
+      total: montantTTC,
+      car,
+      differenceEnJours,
+      dateDepart,
+      dateRetour,
+      kilometrageType,
+    },
+  });
+  */
+} catch (error) {
+  console.error("Erreur lors de la réservation :", error);
+  toast.error(" Erreur lors de la création de la réservation");
+}
+} else {
+  toast.warn("⚠️ Connectez-vous d'abord");
+  // navigate("/login");
+}
+
   };
 
   return (

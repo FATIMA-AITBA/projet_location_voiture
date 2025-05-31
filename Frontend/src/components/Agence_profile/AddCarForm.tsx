@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { toast } from "react-toastify";
 
 const AddCarForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -11,29 +12,31 @@ const AddCarForm: React.FC = () => {
     const formData = new FormData(e.currentTarget);
 
     try {
-      const response = await fetch('http://localhost:5000/api/voitures', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Ne PAS mettre 'Content-Type' ici
-        },
-        body: formData
-      });
+  const response = await fetch('http://localhost:5000/api/voitures', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}` // Pas de Content-Type ici
+    },
+    body: formData
+  });
 
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({ message: 'Erreur inconnue' }));
-        throw new Error(err.message || 'Erreur lors de la création');
-      }
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ message: 'Erreur inconnue' }));
+    throw new Error(err.message || 'Erreur lors de la création');
+  }
 
-      window.alert('Annonce publiée avec succès');
-      if (formRef.current) {
-        formRef.current.reset();
-      }
-    } catch (error: any) {
-      console.error(error);
-      window.alert(`Erreur : ${error.message}`);
-    } finally {
-      setSubmitting(false);
-    }
+  toast.success('Annonce publiée avec succès');
+  
+  if (formRef.current) {
+    formRef.current.reset();
+  }
+} catch (error: any) {
+  console.error(error);
+  toast.error(`Erreur : ${error.message}`);
+} finally {
+  setSubmitting(false);
+}
+
   };
 
   const marques = [ 
