@@ -10,6 +10,8 @@ import CarCarousel from '../components/Home/CarCarousel'
 import TroisEtapes from '../components/Home/TroisEtapes'
 import Footer from '../components/Utils/Footer'
 import StatsSection from "../components/Home/StatsSection"
+import TemoignagesClients from '../components/Home/TemoignagesClients'
+
 
 interface Car {
   id: string;
@@ -50,6 +52,7 @@ export default function Home() {
       <DevisesSection />
       <CarCarousel carList={carList} />
       <TroisEtapes />
+      <TemoignagesClients /> 
       <StatsSection />
       <Footer />
     </main>

@@ -530,7 +530,7 @@ const filterDate = (dateDepart: string, dateRetour: string) => {
 
 
     {/* Liste des marques */}
-<div className="grid grid-cols-4 gap-4 sm:grid-cols-6 md:grid-cols-8 lg:flex lg:flex-row lg:justify-center lg:gap-3 p-4 rounded-lg">
+<div className="grid grid-cols-4 gap-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 p-4 rounded-lg">
   {brandList
     .filter((item: string) => item !== "Toutes")
     .map((item: string, index: number) => {

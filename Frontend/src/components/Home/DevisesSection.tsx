@@ -7,7 +7,7 @@ const DevisesSection: React.FC = () => {
         LOUEZ HAUT DE GAMME <br /> A PRIX ATTRACTIF.
       </h2>
       <p className="font-bold text-[#1a1a1a] text-center">
-        Location de voitures premium au meilleur prix. Dans le monde entier.
+        Location de voitures premium au meilleur prix. partout au Maroc.
       </p>
     </div>
   );

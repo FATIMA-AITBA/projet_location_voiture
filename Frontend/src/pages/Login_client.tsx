@@ -66,7 +66,11 @@ export default function ClientAuthPage() {
   };
 
   return (
-    <div className="w-full flex justify-center items-center min-h-screen bg-gray-100 px-4">
+     <div
+  className="w-full flex justify-center items-center min-h-screen bg-[#1DA1F2] px-4 bg-no-repeat bg-center
+             bg-contain sm:bg-container"
+  style={{ backgroundImage: "url('/images/background.png')" ,}}
+>
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-center font-bold text-xl mb-4">Espace Client</h2>
 

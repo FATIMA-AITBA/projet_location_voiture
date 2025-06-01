@@ -69,6 +69,9 @@ export default function CarCarousel({ carList, differenceEnJours }: CarCarouselP
     slidesToScroll: 1,
     dots: true,
     arrows: true,
+    autoplay: true,
+    autoplaySpeed: 1000,
+    pauseOnHover: true,
     responsive: [
       {
         breakpoint: 1024,
