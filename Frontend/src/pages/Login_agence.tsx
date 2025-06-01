@@ -80,7 +80,7 @@ export default function AgenceAuthPage() {
              bg-contain sm:bg-container"
   style={{ backgroundImage: "url('/images/background.png')" ,}}
 >
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+      <div className="bg-white/90 p-6 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-center font-bold text-xl mb-4">Espace Agence</h2>
 
         <div className="flex justify-between mb-6 border-b">
